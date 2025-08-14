@@ -1,6 +1,6 @@
 {
   "name": "gh-trending-newsletter",
-  "description": "A fully automated weekly newsletter that highlights trending GitHub repositories",
+  "description": "A fully automated weekly newsletter that highlights trending GitHub repos",
   "version": "1.0.0",
   "author": "Mustapha Hadid",
   "license": "MIT",

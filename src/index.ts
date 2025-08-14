@@ -6,7 +6,7 @@
 
 console.log('GitHub Trends Newsletter - Coming Soon!');
 
-export default function main(): void {
+function main(): void {
   console.log('Newsletter system initialized');
 }
 
