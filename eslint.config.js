@@ -24,8 +24,8 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
-      'import': importPlugin,
-      'promise': promisePlugin,
+      import: importPlugin,
+      promise: promisePlugin,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
@@ -46,7 +46,7 @@ export default [
       // General rules
       'no-console': 'warn',
       'prefer-const': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
     },
   },
   prettierConfig,
