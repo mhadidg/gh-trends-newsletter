@@ -25,7 +25,6 @@ async function preview(): Promise<void> {
     console.log('📧 EMAIL CONTENT:');
     console.log('─'.repeat(50));
     console.log(newsletter.content);
-
   } catch (error) {
     console.error('❌ Preview failed:', error);
     process.exit(1);

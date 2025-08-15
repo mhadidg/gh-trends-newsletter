@@ -1,0 +1,38 @@
+name: Send newsletter
+
+on:
+  #schedule:
+  # Run every Monday at 9:00 AM UTC
+  #- cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Run tests
+      run: npm test
+
+    - name: Send newsletter
+      run: npm run prod
+      env:
+        NODE_ENV: production
+        SEND_ENABLED: true
+        BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
