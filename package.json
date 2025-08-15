@@ -24,7 +24,8 @@
     "lint:fix": "eslint src --ext .ts,.js --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^24.2.1",
@@ -36,6 +37,8 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
@@ -46,5 +49,14 @@
     "dotenv-flow": "^4.1.0",
     "handlebars": "^4.7.8",
     "zod": "^4.0.17"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
