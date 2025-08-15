@@ -8,9 +8,6 @@ import { getWeekNumber } from './utils/common';
 
 async function preview(): Promise<void> {
   try {
-    console.log('🔍 GitHub Trends Newsletter Preview');
-    console.log('═'.repeat(50));
-
     const repos = await _fetch();
     const scoredRepos = score(repos);
     const newsletter = render(scoredRepos);
@@ -26,11 +23,9 @@ async function preview(): Promise<void> {
     console.log('');
 
     console.log('📧 EMAIL CONTENT:');
-    console.log('─'.repeat(80));
+    console.log('─'.repeat(50));
     console.log(newsletter.content);
-    console.log('─'.repeat(80));
 
-    console.log('✅ Preview complete!');
   } catch (error) {
     console.error('❌ Preview failed:', error);
     process.exit(1);
