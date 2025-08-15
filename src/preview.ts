@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+import 'dotenv/config';
+import { _fetch } from './pipeline/fetch.js';
+import { score } from './pipeline/score.js';
+import { render } from './pipeline/render';
+import { getWeekNumber } from './utils/common';
+
+async function preview(): Promise<void> {
+  try {
+    console.log('🔍 GitHub Trends Newsletter Preview');
+    console.log('═'.repeat(50));
+
+    const repos = await _fetch();
+    const scoredRepos = score(repos);
+    const newsletter = render(scoredRepos);
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const week = getWeekNumber(now);
+    const weekId = `${year}-W${week.toString().padStart(2, '0')}`;
+
+    console.log(`📅 Week: ${weekId}`);
+    console.log(`📦 Repositories: ${scoredRepos.length}`);
+    console.log(`📝 Subject: ${newsletter.subject}`);
+    console.log('');
+
+    console.log('📧 EMAIL CONTENT:');
+    console.log('─'.repeat(80));
+    console.log(newsletter.content);
+    console.log('─'.repeat(80));
+
+    console.log('✅ Preview complete!');
+  } catch (error) {
+    console.error('❌ Preview failed:', error);
+    process.exit(1);
+  }
+}
+
+// Run if this is the main module
+if (import.meta.url === `file://${process.argv[1]}`) {
+  preview().catch(error => {
+    console.error('Unhandled error:', error);
+    process.exit(1);
+  });
+}
