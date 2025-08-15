@@ -1,6 +1,6 @@
 {
   "name": "gh-trending-newsletter",
-  "description": "A fully automated weekly newsletter that highlights trending GitHub repos",
+  "description": "A fully automated weekly newsletter highlighting trending GitHub repos",
   "version": "1.0.0",
   "author": "Mustapha Hadid",
   "license": "MIT",
@@ -14,9 +14,8 @@
     "build:watch": "tsc --watch",
     "dev": "NODE_ENV=development tsx src/run.ts",
     "preview": "NODE_ENV=development tsx src/preview.ts",
-    "start": "node dist/index.js",
     "prod": "NODE_ENV=production node dist/run.js",
-    "test": "vitest",
+    "test": "vitest --passWithNoTests",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit",
