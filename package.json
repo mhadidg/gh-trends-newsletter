@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/run.ts",
+    "preview": "tsx src/preview.ts",
     "start": "node dist/index.js",
     "test": "vitest",
     "test:watch": "vitest --watch",
@@ -25,6 +26,7 @@
     "clean": "rm -rf dist coverage"
   },
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
@@ -38,5 +40,11 @@
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@types/handlebars": "^4.0.40",
+    "dotenv": "^17.2.1",
+    "handlebars": "^4.7.8",
+    "zod": "^4.0.17"
   }
 }
