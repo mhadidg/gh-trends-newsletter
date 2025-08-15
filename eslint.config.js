@@ -5,6 +5,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import promisePlugin from 'eslint-plugin-promise';
 import globals from 'globals';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   js.configs.recommended,
@@ -48,6 +49,7 @@ export default [
       'eqeqeq': ['error', 'always'],
     },
   },
+  prettierConfig,
   {
     ignores: ['dist/', 'coverage/', 'node_modules/'],
   },
