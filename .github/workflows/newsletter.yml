@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
+    - name: Setup Node
       uses: actions/setup-node@v4
       with:
         node-version: '20'
@@ -32,7 +32,6 @@ jobs:
     - name: Send newsletter
       run: npm run prod
       env:
-        NODE_ENV: production
         SEND_ENABLED: true
         BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
