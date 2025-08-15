@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import 'dotenv/config';
+import 'dotenv-flow/config';
 import { _fetch } from './pipeline/fetch.js';
 import { score } from './pipeline/score.js';
 import { render } from './pipeline/render';

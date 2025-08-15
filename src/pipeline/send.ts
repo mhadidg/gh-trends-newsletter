@@ -54,6 +54,7 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
       '[ERROR] send: newsletter delivery failed (reason=%s)',
       error instanceof Error ? error.message : 'unknown'
     );
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

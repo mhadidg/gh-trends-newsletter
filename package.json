@@ -26,7 +26,6 @@
     "clean": "rm -rf dist coverage"
   },
   "devDependencies": {
-    "@types/dotenv": "^6.1.1",
     "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
@@ -43,7 +42,7 @@
   },
   "dependencies": {
     "@types/handlebars": "^4.0.40",
-    "dotenv": "^17.2.1",
+    "dotenv-flow": "^4.1.0",
     "handlebars": "^4.7.8",
     "zod": "^4.0.17"
   }
