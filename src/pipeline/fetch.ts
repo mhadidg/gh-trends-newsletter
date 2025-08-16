@@ -1,15 +1,12 @@
 import { Repository, RepositorySchema } from '../utils/types';
 import { mockGitHubResponse } from '../mocks/github-api';
 
-const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql';
-
-const TRENDING_REPOS_QUERY = `
-  query TrendingRepos($since: DateTime!) {
+const buildTopReposQuery = (since: string) => `
+  query TrendingRepos {
     search(
-      query: "created:>$since fork:false archived:false"
+      query: "created:>${since} fork:false archived:false sort:stars"
       type: REPOSITORY
       first: 100
-      sort: STARS
     ) {
       nodes {
         ... on Repository {
@@ -43,19 +40,17 @@ export async function _fetch(): Promise<Repository[]> {
   const since = new Date();
   // TODO: make the 7-day window configurable (env or CLI)
   since.setDate(since.getDate() - 7); // Last 7 days
+  const sinceFormatted = since.toISOString().split('T')[0]!; // Format as YYYY-MM-DD
 
   try {
-    const response = await fetch(GITHUB_GRAPHQL_URL, {
+    const response = await fetch('https://api.github.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query: TRENDING_REPOS_QUERY,
-        variables: {
-          since: since.toISOString(),
-        },
+        query: buildTopReposQuery(sinceFormatted),
       }),
     });
 
