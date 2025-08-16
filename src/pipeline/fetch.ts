@@ -54,11 +54,14 @@ export async function _fetch(): Promise<Repository[]> {
       }),
     });
 
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error(`[ERROR] github-api: request failed (status=${response.status})`);
+      const message = data.message.toLowerCase() ?? 'unknown';
+      throw new Error(
+        `[ERROR] github-api: request failed (status=${response.status}, message=${message})`
+      );
     }
 
-    const data = await response.json();
     if (data.errors) {
       throw new Error(`[ERROR] graphql: validation errors detected (count=${data.errors.length})`);
     }
