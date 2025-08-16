@@ -51,7 +51,7 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
     };
   } catch (error) {
     console.error(
-      '[ERROR] send: newsletter delivery failed (reason=%s)',
+      '[FATAL] send: newsletter delivery failed (reason=%s)',
       error instanceof Error ? error.message : 'unknown'
     );
 

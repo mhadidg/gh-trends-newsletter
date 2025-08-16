@@ -26,7 +26,7 @@ export function render(repos: ScoredRepository[]): Newsletter {
     year,
     week: week.toString().padStart(2, '0'),
     date: now.toISOString().split('T')[0],
-    repositories: repos,
+    repos,
   };
 
   const content = template(templateData);
@@ -34,6 +34,5 @@ export function render(repos: ScoredRepository[]): Newsletter {
   return {
     subject,
     content,
-    repositories: repos,
   };
 }

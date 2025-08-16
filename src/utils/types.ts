@@ -17,7 +17,6 @@ export const ScoredRepositorySchema = RepositorySchema.extend({
 export const NewsletterSchema = z.object({
   subject: z.string(),
   content: z.string(),
-  repositories: z.array(ScoredRepositorySchema),
 });
 
 export type Repository = z.infer<typeof RepositorySchema>;

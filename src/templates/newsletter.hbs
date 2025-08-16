@@ -1,6 +1,6 @@
-🚀 Top {{repositories.length}} trending repositories this week:
+🚀 Top {{repos.length}} trending repositories this week:
 
-{{#each repositories}}
+{{#each repos}}
   {{add @index 1}}. {{nameWithOwner}} ⭐ {{formatNumber stargazerCount}}
   {{#if description}}{{description}}{{else}}No description available{{/if}}
   {{url}}

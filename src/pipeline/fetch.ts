@@ -28,6 +28,7 @@ const TRENDING_REPOS_QUERY = `
   }
 `;
 
+// TODO: backoff on 429/secondary rate limits; read X-RateLimit-Remaining headers.
 export async function _fetch(): Promise<Repository[]> {
   // Use mocks in dev/test environments
   if (process.env.NODE_ENV !== 'production') {
@@ -40,6 +41,7 @@ export async function _fetch(): Promise<Repository[]> {
   }
 
   const since = new Date();
+  // TODO: make the 7-day window configurable (env or CLI)
   since.setDate(since.getDate() - 7); // Last 7 days
 
   try {
@@ -69,7 +71,7 @@ export async function _fetch(): Promise<Repository[]> {
     return parseRepositories(data.data.search.nodes);
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'unknown';
-    console.error(`[FATAL] github-api: operation failed (reason=${reason})`);
+    console.error(`[FATAL] fetch: operation failed (reason=${reason})`);
     throw error;
   }
 }
