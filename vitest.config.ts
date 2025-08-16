@@ -17,5 +17,6 @@ export default defineConfig({
       exclude: ['node_modules/**', 'dist/**', 'coverage/**', '*.config.{js,ts}', 'tests/**'],
     },
     include: ['tests/**/*.test.ts'],
+    setupFiles: ['tests/vitest.setup.ts'],
   },
 });

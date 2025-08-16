@@ -56,7 +56,7 @@ export async function _fetch(): Promise<Repository[]> {
 
     const data = await response.json();
     if (!response.ok) {
-      const message = data.message.toLowerCase() ?? 'unknown';
+      const message = data.message?.toLowerCase() ?? 'unknown';
       throw new Error(
         `[ERROR] github-api: request failed (status=${response.status}, message=${message})`
       );
