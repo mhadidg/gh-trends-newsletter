@@ -11,7 +11,7 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
   if (!sendEnabled) {
     return {
       success: true,
-      messageId: 'mock-disabled-' + Date.now(),
+      messageId: 'mock-disabled',
     };
   }
 
@@ -47,7 +47,7 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
 
     return {
       success: true,
-      messageId: result.id,
+      messageId: result.id ?? null,
     };
   } catch (error) {
     console.error(
