@@ -6,7 +6,7 @@ import { score } from './pipeline/score.js';
 import { render } from './pipeline/render';
 import { send } from './pipeline/send.js';
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   try {
     console.log('📡 Scanning the GitHub universe...');
     const repos = await _fetch();
