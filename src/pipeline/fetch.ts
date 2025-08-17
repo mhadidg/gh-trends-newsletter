@@ -38,9 +38,10 @@ export async function _fetch(): Promise<Repository[]> {
   }
 
   const since = new Date();
-  // TODO: make the 7-day window configurable (env or CLI)
-  since.setDate(since.getDate() - 7); // Last 7 days
+  const fetchDays = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
+  since.setDate(since.getDate() - fetchDays);
   const sinceFormatted = since.toISOString().split('T')[0]!; // Format as YYYY-MM-DD
+  console.log(`[INFO] fetch: fetching repos since ${sinceFormatted}`);
 
   try {
     const response = await fetch('https://api.github.com/graphql', {
