@@ -8,13 +8,20 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       reportsDirectory: './coverage',
-      // thresholds: {
-      //   statements: 80,
-      //   branches: 70,
-      //   functions: 80,
-      //   lines: 80,
-      // },
-      exclude: ['node_modules/**', 'dist/**', 'coverage/**', '*.config.{js,ts}', 'tests/**'],
+      thresholds: {
+        statements: 80,
+        branches: 70,
+        functions: 80,
+        lines: 80,
+      },
+      exclude: [
+        'node_modules/**', // Node modules
+        'dist/**', // Compiled output
+        'src/**/*.d.ts', // Type definitions
+        'src/mocks/**', // Mock data
+        '**/*.config.{js,ts}', // Config files
+        'src/preview.ts', // Preview script
+      ],
     },
     include: ['tests/**/*.test.ts'],
     setupFiles: ['tests/vitest.setup.ts'],
