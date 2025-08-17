@@ -52,7 +52,11 @@
     "zod": "^4.0.17"
   },
   "lint-staged": {
-    "*.{ts,js}": [
+    "src/**/*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "tests/**/*.{ts,js}": [
       "eslint --fix",
       "prettier --write"
     ],
