@@ -1,7 +1,7 @@
 import { Repository } from '../utils/types';
 
 // Mock GitHub GraphQL API response
-export const mockRepos: Repository[] = [
+export const mockGithubRepos: Repository[] = [
   {
     id: 'MDEwOlJlcG9zaXRvcnkxMjM0NTY3ODk=',
     nameWithOwner: 'example/awesome-project',
@@ -113,11 +113,3 @@ export const mockRepos: Repository[] = [
     stargazerCount: 1320,
   },
 ];
-
-export const mockGitHubResponse = {
-  data: {
-    search: {
-      nodes: mockRepos,
-    },
-  },
-};

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { _fetch } from '../../src/pipeline/fetch';
-import { mockRepos } from '../../src/mocks/github-api';
+import { mockGithubRepos } from '../../src/mocks/github-api';
 
 describe('fetch.ts', () => {
   const mockFetch = vi.fn();
@@ -72,7 +72,7 @@ describe('fetch.ts', () => {
         json: vi.fn().mockResolvedValue({
           data: {
             search: {
-              nodes: mockRepos,
+              nodes: mockGithubRepos,
             },
           },
         }),
@@ -105,7 +105,7 @@ describe('fetch.ts', () => {
         json: vi.fn().mockResolvedValue({
           data: {
             search: {
-              nodes: [mockRepos[0]],
+              nodes: [mockGithubRepos[0]],
             },
           },
         }),
@@ -114,7 +114,7 @@ describe('fetch.ts', () => {
       const result = await _fetch();
 
       expect(result).toHaveLength(1);
-      expect(result[0]).toEqual(mockRepos[0]);
+      expect(result[0]).toEqual(mockGithubRepos[0]);
     });
 
     it('should handle repos with missing optional', async () => {

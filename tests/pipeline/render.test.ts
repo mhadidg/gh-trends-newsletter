@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from '../../src/pipeline/render';
 import { ScoredRepository } from '../../src/utils/types';
-import { mockRepos } from '../../src/mocks/github-api';
+import { mockGithubRepos } from '../../src/mocks/github-api';
 
 describe('render.ts', () => {
   const mockDate = new Date('2025-08-15T10:00:00.000Z'); // Friday, Week 33
 
   // Convert Repository to ScoredRepository
-  const mockScoredRepos: ScoredRepository[] = mockRepos.map((repo, index) => ({
+  const mockScoredRepos: ScoredRepository[] = mockGithubRepos.map((repo, index) => ({
     ...repo,
     score: 0.9 - index * 0.1, // Descending scores from 0.9 to 0.0
   }));

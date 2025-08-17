@@ -1,5 +1,5 @@
 import { Repository, RepositorySchema } from '../utils/types';
-import { mockGitHubResponse } from '../mocks/github-api';
+import { mockGithubRepos } from '../mocks/github-api';
 
 const buildTopReposQuery = (since: string) => `
   query TrendingRepos {
@@ -29,7 +29,7 @@ const buildTopReposQuery = (since: string) => `
 export async function _fetch(): Promise<Repository[]> {
   // Use mocks in dev/test environments
   if (process.env.NODE_ENV !== 'production') {
-    return parseMockResponse();
+    return mockRepos();
   }
 
   const token = process.env.GITHUB_TOKEN;
@@ -66,7 +66,7 @@ export async function _fetch(): Promise<Repository[]> {
       throw new Error(`[ERROR] graphql: validation errors detected (count=${data.errors.length})`);
     }
 
-    return parseRepositories(data.data.search.nodes);
+    return parseRepos(data.data.search.nodes);
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'unknown';
     console.error(`[FATAL] fetch: operation failed (reason=${reason})`);
@@ -74,13 +74,12 @@ export async function _fetch(): Promise<Repository[]> {
   }
 }
 
-function parseMockResponse(): Repository[] {
-  return parseRepositories(mockGitHubResponse.data.search.nodes);
+function mockRepos(): Repository[] {
+  return parseRepos(mockGithubRepos);
 }
 
-function parseRepositories(rawRepos: unknown[]): Repository[] {
+function parseRepos(rawRepos: unknown[]): Repository[] {
   return rawRepos.map(repo => {
-    const parsed = RepositorySchema.parse(repo);
-    return parsed;
+    return RepositorySchema.parse(repo);
   });
 }
