@@ -95,7 +95,7 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
       nameWithOwner: details.full_name,
       url: details.html_url,
       description: details.description,
-      primaryLanguage: details.language ? { name: details.language } : null,
+      primaryLanguage: details.language,
       createdAt: details.created_at,
       stargazerCount: repo.stars,
     };

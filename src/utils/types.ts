@@ -5,7 +5,7 @@ export const RepositorySchema = z.object({
   nameWithOwner: z.string(),
   url: z.string(),
   description: z.string().nullable(),
-  primaryLanguage: z.object({ name: z.string() }).nullable(),
+  primaryLanguage: z.string().nullable(),
   createdAt: z.string(),
   stargazerCount: z.number(),
 });
