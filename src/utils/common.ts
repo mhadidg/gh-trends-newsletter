@@ -1,5 +1,21 @@
+import { HttpError, logError, logHttpError, TaggedError } from './logging';
+
 export function getWeekNumber(date: Date): number {
   const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
   const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
   return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+export async function handleProcessError(error: unknown) {
+  if (error instanceof HttpError) {
+    await logHttpError(error.tag, error);
+  } else if (error instanceof TaggedError) {
+    logError(error.tag, error);
+  } else {
+    console.log('');
+    console.log('🫣 Unhandled error');
+    throw error;
+  }
+
+  process.exit(1);
 }

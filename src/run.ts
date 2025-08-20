@@ -5,7 +5,8 @@ import { _fetch } from './pipeline/fetch.js';
 import { score } from './pipeline/score.js';
 import { render } from './pipeline/render';
 import { send } from './pipeline/send.js';
-import { TaggedError, HttpError, logError, logHttpError, logInfo } from './utils/logging';
+import { logInfo } from './utils/logging';
+import { handleProcessError } from './utils/common';
 
 export async function main(): Promise<void> {
   const window = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
@@ -35,17 +36,5 @@ export async function main(): Promise<void> {
 
 // Run if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(async error => {
-    if (error instanceof HttpError) {
-      await logHttpError(error.tag, error);
-    } else if (error instanceof TaggedError) {
-      logError(error.tag, error);
-    } else {
-      console.log('');
-      console.log('🫣 Unhandled error');
-      throw error;
-    }
-
-    process.exit(1);
-  });
+  main().catch(handleProcessError);
 }

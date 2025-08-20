@@ -4,7 +4,8 @@ import 'dotenv-flow/config';
 import { _fetch } from './pipeline/fetch.js';
 import { score } from './pipeline/score.js';
 import { render } from './pipeline/render';
-import { HttpError, logError, logHttpError, logInfo, TaggedError } from './utils/logging';
+import { logInfo } from './utils/logging';
+import { handleProcessError } from './utils/common';
 
 async function preview() {
   const window = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
@@ -30,17 +31,5 @@ async function preview() {
 
 // Run if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
-  preview().catch(async error => {
-    if (error instanceof HttpError) {
-      await logHttpError(error.tag, error);
-    } else if (error instanceof TaggedError) {
-      logError(error.tag, error);
-    } else {
-      console.log('');
-      console.log('🫣 Unhandled error');
-      throw error;
-    }
-
-    process.exit(1);
-  });
+  preview().catch(handleProcessError);
 }
