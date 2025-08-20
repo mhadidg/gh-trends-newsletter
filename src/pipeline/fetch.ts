@@ -1,5 +1,6 @@
 import { Repository, RepositorySchema } from '../utils/types';
 import { mockGithubRepos } from '../mocks/github-api';
+import { TaggedError, HttpError, logInfo } from '../utils/logging';
 
 export interface ClickHouseRepo {
   repo_name: string;
@@ -37,28 +38,17 @@ export async function _fetch(): Promise<Repository[]> {
 
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
-    throw new Error('[FATAL] config: GITHUB_TOKEN environment variable required');
+    throw new TaggedError('config', 'GITHUB_TOKEN var required');
   }
 
   const fetchDays = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
   const topN = parseInt(process.env.NEWSLETTER_TOP_N || '10');
   const fetchLimit = topN * 3; // account for filtering
 
-  console.log(`[INFO] fetch: fetching top ${fetchLimit} repos from last ${fetchDays} days`);
+  const trendingRepos = await fetchTrendingRepos(fetchDays, fetchLimit);
+  logInfo('clickhouse', `fetched ${trendingRepos.length} repos`);
 
-  try {
-    const clickhouseRepos = await fetchTrendingRepos(fetchDays, fetchLimit);
-    console.log(`[INFO] fetch: got ${clickhouseRepos.length} repos from ClickHouse`);
-
-    const repositories = await fetchRepoDetails(clickhouseRepos, token);
-    console.log(`[INFO] fetch: enriched repos with GitHub data`);
-
-    return repositories;
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : 'unknown';
-    console.error(`[FATAL] fetch: ${reason}`);
-    throw error;
-  }
+  return await enrichRepos(trendingRepos, token);
 }
 
 async function fetchTrendingRepos(days: number, limit: number): Promise<ClickHouseRepo[]> {
@@ -69,60 +59,48 @@ async function fetchTrendingRepos(days: number, limit: number): Promise<ClickHou
     body: query,
   });
 
-  if (response.ok) {
-    const message = await response.text();
-    throw new Error(
-      `clickhouse: request failed (status: ${response.status})\n  → Reason: ${message}`
-    );
+  if (!response.ok) {
+    throw new HttpError('clickhouse', 'fetching trending repos failed', response);
   }
 
   const data = await response.json();
   return data.data as ClickHouseRepo[];
 }
 
-async function fetchRepoDetails(repos: ClickHouseRepo[], token: string): Promise<Repository[]> {
+async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repository[]> {
   const result: Repository[] = [];
 
   for (const repo of repos) {
     const repoName = repo.repo_name;
-    try {
-      const response = await fetch(`https://api.github.com/repos/${repoName}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github+json',
-        },
-      });
+    const response = await fetch(`https://api.github.com/repos/${repoName}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+      },
+    });
 
-      if (!response.ok) {
-        const body = await response.text();
-        throw new Error(
-          `github: failed for ${repoName} (status: ${response.status})\n  → Response: ${body}`
-        );
-      }
-
-      const details = await response.json();
-
-      const repository: Repository = {
-        id: details.id.toString(),
-        nameWithOwner: details.full_name,
-        url: details.html_url,
-        description: details.description,
-        primaryLanguage: details.language ? { name: details.language } : null,
-        createdAt: details.created_at,
-        stargazerCount: repo.stars,
-      };
-
-      result.push(repository);
-    } catch (error) {
-      // Presumably repo got deleted or made private
-      const reason = error instanceof Error ? error.message : 'unknown';
-      console.warn(`[WARN] fetch: failed to get details for ${repoName}, skipping`);
-      console.warn(`  → Reason: ${reason}`);
+    // Some could've been deleted or went private
+    if ([403, 404].includes(response.status)) {
+      continue;
     }
-  }
 
-  if (result.length === 0) {
-    throw new Error('github: all requests failed');
+    if (!response.ok) {
+      throw new HttpError('github', 'fetching repo failed', response);
+    }
+
+    const details = await response.json();
+
+    const repository: Repository = {
+      id: details.id.toString(),
+      nameWithOwner: details.full_name,
+      url: details.html_url,
+      description: details.description,
+      primaryLanguage: details.language ? { name: details.language } : null,
+      createdAt: details.created_at,
+      stargazerCount: repo.stars,
+    };
+
+    result.push(repository);
   }
 
   return result;

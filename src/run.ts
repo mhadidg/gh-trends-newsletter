@@ -5,44 +5,47 @@ import { _fetch } from './pipeline/fetch.js';
 import { score } from './pipeline/score.js';
 import { render } from './pipeline/render';
 import { send } from './pipeline/send.js';
+import { TaggedError, HttpError, logError, logHttpError, logInfo } from './utils/logging';
 
 export async function main(): Promise<void> {
-  try {
-    console.log('📡 Scanning the GitHub universe...');
-    const repos = await _fetch();
-    console.log(`   → ${repos.length} trending repositories discovered`);
-    console.log('');
+  const window = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
+  const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
 
-    console.log('🏆 Ranking by popularity...');
-    const scoredRepos = score(repos);
-    console.log(`   → Top candidates selected`);
-    console.log('');
+  console.log(`📡 Scanning the GitHub universe (window: ${window}, top-n: ${topn})`);
+  const repos = await _fetch();
+  logInfo('scan', `${repos.length} trending repos discovered`);
+  console.log('');
 
-    console.log('✍️ Crafting newsletter content...');
-    const newsletter = render(scoredRepos);
-    console.log(`   → "${newsletter.subject}" (${newsletter.content.length} chars)`);
-    console.log('');
+  console.log('🏆 Scoring to select the best');
+  const scoredRepos = score(repos);
+  logInfo('score', `${scoredRepos.length} repos selected`);
+  console.log('');
 
-    const sendEnabled = process.env.SEND_ENABLED === 'true';
-    console.log(`📮 Publishing status: ${sendEnabled ? 'LIVE' : 'DRY RUN'}`);
+  console.log('✍️ Crafting newsletter content...');
+  const newsletter = render(scoredRepos);
+  logInfo('render', `rendered newsletter (subject: ${newsletter.subject})`);
+  console.log('');
 
-    const sendResult = await send(newsletter);
-    if (sendResult.success) {
-      console.log(`   → Email delivered (ID: ${sendResult.messageId})`);
-    } else {
-      console.log(`   → ❌ Send failed: ${sendResult.error}`);
-      process.exit(1);
-    }
-  } catch (error) {
-    console.error(`  → ❌ Pipeline failed:`, error);
-    process.exit(1);
-  }
+  const sendEnabled = process.env.SEND_ENABLED === 'true';
+  console.log(`📮 Publishing status: ${sendEnabled ? 'LIVE' : 'DRY RUN'}`);
+
+  const sendResult = await send(newsletter);
+  logInfo('send', `email sent (ID: ${sendResult.messageId})`);
 }
 
 // Run if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(error => {
-    console.error('🫣 Unhandled error:', error);
+  main().catch(async error => {
+    if (error instanceof HttpError) {
+      await logHttpError(error.tag, error);
+    } else if (error instanceof TaggedError) {
+      logError(error.tag, error);
+    } else {
+      console.log('');
+      console.log('🫣 Unhandled error');
+      throw error;
+    }
+
     process.exit(1);
   });
 }

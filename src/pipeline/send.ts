@@ -1,4 +1,5 @@
 import { Newsletter } from '../utils/types';
+import { TaggedError, HttpError } from '../utils/logging';
 
 export interface SendResult {
   success: boolean;
@@ -17,47 +18,29 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
 
   const apiKey = process.env.BUTTONDOWN_API_KEY;
   if (!apiKey) {
-    throw new Error(
-      '[FATAL] config: BUTTONDOWN_API_KEY environment variable required when SEND_ENABLED=true'
-    );
+    throw new TaggedError('config', 'BUTTONDOWN_API_KEY var required when SEND_ENABLED=true');
   }
 
-  try {
-    const response = await fetch('https://api.buttondown.email/v1/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Token ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        subject: newsletter.subject,
-        body: newsletter.content,
-        email_type: 'public',
-      }),
-    });
+  const response = await fetch('https://api.buttondown.email/v1/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Token ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      subject: newsletter.subject,
+      body: newsletter.content,
+      email_type: 'public',
+    }),
+  });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `[ERROR] buttondown-api: request failed (status=${response.status} response=${errorText})`
-      );
-    }
-
-    const result = await response.json();
-
-    return {
-      success: true,
-      messageId: result.id ?? null,
-    };
-  } catch (error) {
-    console.error(
-      '[FATAL] send: newsletter delivery failed (reason=%s)',
-      error instanceof Error ? error.message : 'unknown'
-    );
-
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+  if (!response.ok) {
+    throw new HttpError('buttondown', 'email sending failed', response);
   }
+
+  const result = await response.json();
+  return {
+    success: true,
+    messageId: result.id ?? null,
+  };
 }

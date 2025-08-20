@@ -1,5 +1,6 @@
 import { franc } from 'franc';
 import { Repository, ScoredRepository } from '../utils/types';
+import { logWarn } from '../utils/logging';
 
 export function score(repos: Repository[]): ScoredRepository[] {
   const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
@@ -7,25 +8,23 @@ export function score(repos: Repository[]): ScoredRepository[] {
   // Simple logic for MVP
   return repos
     .filter(repo => {
-      // high-quality repo with no desc? I'd rather take the risks
+      const repoName = repo.nameWithOwner;
+      // high-quality repo with no desc? Happy to take the risks
       if (repo.description === null || repo.description.trim() === '') {
-        console.warn(`[INFO] Skipping repo ${repo.nameWithOwner} - empty desc`);
+        logWarn('score', `empty description, skipping: ${repoName}`);
         return false;
       }
 
       const lang = franc(repo.description);
-      // no Chinese with ❤️
+      // no Chinese with love
       if (lang === 'cmn') {
-        console.warn(`[INFO] Skipping repo - lang: ${lang}, desc: ${repo.description}`);
+        logWarn('score', `Chinese repo, skipping: ${repoName}`);
         return false;
       }
 
       return true;
     })
-    .map(repo => ({
-      ...repo,
-      score: repo.stargazerCount,
-    }))
+    .map(repo => ({ ...repo, score: repo.stargazerCount }))
     .sort((a, b) => b.score - a.score)
     .slice(0, topn);
 }
