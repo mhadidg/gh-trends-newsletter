@@ -6,7 +6,6 @@ export function score(repos: Repository[]): ScoredRepository[] {
 
   // Simple logic for MVP
   return repos
-    .slice(0, topn)
     .filter(repo => {
       // high-quality repo with no desc? I'd rather take the risks
       if (repo.description === null || repo.description.trim() === '') {
@@ -27,5 +26,6 @@ export function score(repos: Repository[]): ScoredRepository[] {
       ...repo,
       score: repo.stargazerCount,
     }))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topn);
 }
