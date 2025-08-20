@@ -1,3 +1,4 @@
+import { franc } from 'franc';
 import { Repository, ScoredRepository } from '../utils/types';
 
 export function score(repos: Repository[]): ScoredRepository[] {
@@ -6,6 +7,22 @@ export function score(repos: Repository[]): ScoredRepository[] {
   // Simple logic for MVP
   return repos
     .slice(0, topn)
+    .filter(repo => {
+      // high-quality repo with no desc? I'd rather take the risks
+      if (repo.description === null || repo.description.trim() === '') {
+        console.warn(`[INFO] Skipping repo ${repo.nameWithOwner} - empty desc`);
+        return false;
+      }
+
+      const lang = franc(repo.description);
+      // no Chinese with ❤️
+      if (lang === 'cmn') {
+        console.warn(`[INFO] Skipping repo - lang: ${lang}, desc: ${repo.description}`);
+        return false;
+      }
+
+      return true;
+    })
     .map(repo => ({
       ...repo,
       score: repo.stargazerCount,

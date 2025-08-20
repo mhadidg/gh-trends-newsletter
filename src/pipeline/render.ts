@@ -16,6 +16,7 @@ const templatePath = join(__dirname, '../templates/newsletter.hbs');
 const templateSource = readFileSync(templatePath, 'utf-8');
 const template = Handlebars.compile(templateSource);
 
+// TODO: fix HTML entities are not decoded in CLI (e.g., &amp;)
 export function render(repos: ScoredRepository[]): Newsletter {
   const now = new Date();
   const year = now.getFullYear();
