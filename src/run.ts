@@ -29,8 +29,8 @@ export async function main(): Promise<void> {
   const sendEnabled = process.env.SEND_ENABLED === 'true';
   console.log(`📮 Publishing status: ${sendEnabled ? 'LIVE' : 'DRY RUN'}`);
 
-  const sendResult = await send(newsletter);
-  logInfo('send', `email sent (ID: ${sendResult.messageId})`);
+  const messageId = await send(newsletter);
+  logInfo('send', `email sent (ID: ${messageId})`);
 }
 
 // Run if this is the main module

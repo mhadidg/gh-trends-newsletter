@@ -1,19 +1,10 @@
 import { Newsletter } from '../utils/types';
-import { TaggedError, HttpError } from '../utils/logging';
+import { HttpError, TaggedError } from '../utils/logging';
 
-export interface SendResult {
-  success: boolean;
-  messageId?: string;
-  error?: string;
-}
-
-export async function send(newsletter: Newsletter): Promise<SendResult> {
+export async function send(newsletter: Newsletter): Promise<string> {
   const sendEnabled = process.env.SEND_ENABLED === 'true';
   if (!sendEnabled) {
-    return {
-      success: true,
-      messageId: 'mock-disabled',
-    };
+    return 'mock-disabled';
   }
 
   const apiKey = process.env.BUTTONDOWN_API_KEY;
@@ -39,8 +30,5 @@ export async function send(newsletter: Newsletter): Promise<SendResult> {
   }
 
   const result = await response.json();
-  return {
-    success: true,
-    messageId: result.id ?? null,
-  };
+  return result.id;
 }
