@@ -16,6 +16,4 @@ export async function handleProcessError(error: unknown) {
     console.log('🫣 Unhandled error');
     throw error;
   }
-
-  process.exit(1);
 }

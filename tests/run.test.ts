@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { main } from '../src/run';
+import { main, run } from '../src/run';
+import { HttpError, TaggedError } from '../src/utils/logging';
 
 describe('run.ts', () => {
   let realFetch: typeof fetch;
@@ -32,11 +33,45 @@ describe('run.ts', () => {
   });
 
   describe('Pipeline execution', () => {
-    it('should run successfully', async () => {
+    beforeEach(async () => {
       vi.stubEnv('SEND_ENABLED', 'true');
       vi.stubEnv('BUTTONDOWN_API_KEY', 'bd_live_key_123');
+    });
 
+    it('should run successfully', async () => {
       await expect(main()).resolves.not.toThrow();
+    });
+
+    it('should logs HTTP errors', async () => {
+      const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+        throw new HttpError('tag', 'message', new Response(null, { status: 500 }));
+      });
+
+      await expect(run()).resolves.not.toThrow();
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('message'));
+    });
+
+    it('should logs tagged errors', async () => {
+      const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+        throw new TaggedError('tag', 'message');
+      });
+
+      await expect(run()).resolves.not.toThrow();
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('message'));
+    });
+
+    it('should throw unhandled errors', async () => {
+      vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+        throw new Error('message');
+      });
+
+      await expect(run()).rejects.toThrow('message');
     });
   });
 });

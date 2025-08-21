@@ -8,6 +8,10 @@ import { send } from './pipeline/send.js';
 import { logInfo } from './utils/logging';
 import { handleProcessError } from './utils/common';
 
+export async function run(): Promise<void> {
+  await main().catch(handleProcessError);
+}
+
 export async function main(): Promise<void> {
   const window = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
   const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
@@ -36,5 +40,5 @@ export async function main(): Promise<void> {
 
 // Run if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(handleProcessError);
+  await run();
 }
