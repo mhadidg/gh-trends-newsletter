@@ -4,7 +4,7 @@ import { TaggedError, HttpError, logInfo } from '../utils/logging';
 
 export interface ClickHouseRepo {
   repo_name: string;
-  stars: number;
+  stars: string;
   appeared_at: string;
 }
 
@@ -31,7 +31,6 @@ FORMAT JSON
 
 // TODO: backoff on 429/secondary rate limits; read X-RateLimit-Remaining headers.
 export async function _fetch(): Promise<Repository[]> {
-  // Use mocks in dev/test environments
   if (process.env.NODE_ENV !== 'production') {
     return mockRepos();
   }
@@ -97,7 +96,7 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
       description: details.description,
       primaryLanguage: details.language,
       createdAt: details.created_at,
-      stargazerCount: repo.stars,
+      stargazerCount: parseInt(repo.stars),
     });
 
     result.push(repository);
