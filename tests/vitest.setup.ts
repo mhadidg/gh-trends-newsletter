@@ -1,7 +1,9 @@
 import { vi, beforeEach } from 'vitest';
 
-// Run before each test as vi.resetAllMocks() clears it
+// Must before each test; otherwise, vi.resetAllMocks() would clear it
 beforeEach(() => {
-  vi.spyOn(console, 'log').mockImplementation(() => {}); // Suppress info logs
-  vi.spyOn(console, 'error').mockImplementation(() => {}); // Suppress error logs
+  // Suppress logs in tests
+  vi.spyOn(console, 'info').mockImplementation(() => {});
+  vi.spyOn(console, 'log').mockImplementation(() => {});
+  vi.spyOn(console, 'error').mockImplementation(() => {});
 });

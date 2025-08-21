@@ -90,7 +90,7 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
 
     const details = await response.json();
 
-    const repository: Repository = {
+    const repository: Repository = RepositorySchema.parse({
       id: details.id.toString(),
       nameWithOwner: details.full_name,
       url: details.html_url,
@@ -98,7 +98,7 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
       primaryLanguage: details.language,
       createdAt: details.created_at,
       stargazerCount: repo.stars,
-    };
+    });
 
     result.push(repository);
   }

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { send } from '../../src/pipeline/send';
+import { HttpError } from '../../src/utils/logging';
 
 describe('send.ts', () => {
   const mockFetch = vi.fn();
@@ -25,8 +26,7 @@ describe('send.ts', () => {
 
       const result = await send(newsletter);
 
-      expect(result.success).toBe(true);
-      expect(result.messageId).toMatch(/^mock-disabled/);
+      expect(result).toMatch('mock-disabled');
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
@@ -35,8 +35,7 @@ describe('send.ts', () => {
 
       const result = await send(newsletter);
 
-      expect(result.success).toBe(true);
-      expect(result.messageId).toMatch(/^mock-disabled/);
+      expect(result).toMatch('mock-disabled');
       expect(mockFetch).not.toHaveBeenCalled();
     });
   });
@@ -49,8 +48,7 @@ describe('send.ts', () => {
     it('should throw when BUTTONDOWN_API_KEY is missing', async () => {
       vi.stubEnv('BUTTONDOWN_API_KEY', undefined);
 
-      await expect(send(newsletter)).rejects.toThrow(/FATAL/);
-      await expect(send(newsletter)).rejects.toThrow(/BUTTONDOWN_API_KEY/);
+      await expect(send(newsletter)).rejects.toThrow('BUTTONDOWN_API_KEY');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -58,8 +56,7 @@ describe('send.ts', () => {
     it('should throw when BUTTONDOWN_API_KEY is empty', async () => {
       vi.stubEnv('BUTTONDOWN_API_KEY', '');
 
-      await expect(send(newsletter)).rejects.toThrow(/FATAL/);
-      await expect(send(newsletter)).rejects.toThrow(/BUTTONDOWN_API_KEY/);
+      await expect(send(newsletter)).rejects.toThrow('BUTTONDOWN_API_KEY');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -71,7 +68,7 @@ describe('send.ts', () => {
       vi.stubEnv('BUTTONDOWN_API_KEY', 'bd_live_key_123');
     });
 
-    it('should make authenticated request with payload', async () => {
+    it('should make well-formed request', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
         json: vi.fn().mockResolvedValue({ id: 'bd_123' }),
@@ -83,11 +80,11 @@ describe('send.ts', () => {
         'https://api.buttondown.email/v1/emails',
         expect.objectContaining({
           method: 'POST',
+          body: expect.any(String),
           headers: expect.objectContaining({
             Authorization: 'Token bd_live_key_123',
             'Content-Type': 'application/json',
           }),
-          body: expect.any(String),
         })
       );
 
@@ -99,10 +96,10 @@ describe('send.ts', () => {
         email_type: 'public',
       });
 
-      expect(result).toEqual({ success: true, messageId: 'bd_123' });
+      expect(result).toBe('bd_123');
     });
 
-    it('should not fail on empty response body', async () => {
+    it('should not fail on empty response', async () => {
       // Totally unexpected, but we assume the call succeeded on 200 OK
       mockFetch.mockResolvedValue({
         ok: true,
@@ -111,8 +108,7 @@ describe('send.ts', () => {
 
       const result = await send(newsletter);
 
-      expect(result.success).toBe(true);
-      expect(result.messageId).toBeNull();
+      expect(result).toBeUndefined();
     });
   });
 
@@ -122,38 +118,29 @@ describe('send.ts', () => {
       vi.stubEnv('BUTTONDOWN_API_KEY', 'bd_live_key_123');
     });
 
-    it('should handle HTTP error responses', async () => {
+    it('should handle 5xx HTTP error', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
-        status: 401,
-        text: vi.fn().mockResolvedValue('Unauthorized'),
+        status: 500,
+        text: vi.fn().mockResolvedValue('internal server error'),
       });
 
-      const result = await send(newsletter);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Unauthorized');
+      await expect(send(newsletter)).rejects.toThrowError(HttpError);
     });
 
     it('should handle network errors', async () => {
-      mockFetch.mockRejectedValue(new Error('Network down'));
+      mockFetch.mockRejectedValue(new Error('network down'));
 
-      const result = await send(newsletter);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Network down');
+      await expect(send(newsletter)).rejects.toThrow('network down');
     });
 
     it('should handle JSON parsing errors', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
-        json: vi.fn().mockRejectedValue(new Error('Invalid JSON')),
+        json: vi.fn().mockRejectedValue(new Error('invalid JSON')),
       });
 
-      const result = await send(newsletter);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Invalid JSON');
+      await expect(send(newsletter)).rejects.toThrow('invalid JSON');
     });
   });
 });
