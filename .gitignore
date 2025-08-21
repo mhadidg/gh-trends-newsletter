@@ -48,9 +48,5 @@ pids/
 tmp/
 temp/
 
-# Project-specific (temporary)
-PRD.md
-TASKS.md
-
 # Claude code
 .claude/*.local.json
