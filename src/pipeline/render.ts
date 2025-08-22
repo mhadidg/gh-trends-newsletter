@@ -12,7 +12,7 @@ Handlebars.registerHelper('add', (a: number, b: number) => a + b);
 Handlebars.registerHelper('formatNumber', (num: number) => num.toLocaleString());
 
 // Load and compile template
-const templatePath = join(__dirname, '../templates/newsletter.hbs');
+const templatePath = join(__dirname, '../templates/release.md.hbs');
 const templateSource = readFileSync(templatePath, 'utf-8');
 const template = Handlebars.compile(templateSource);
 

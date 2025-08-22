@@ -24,7 +24,7 @@ describe('render.ts', () => {
     it('should handle empty repos array', () => {
       const content = render([]);
 
-      expect(content).toContain('GitHub took a vacation this week!');
+      expect(content).toContain('quiet week on GitHub');
     });
 
     it('should render release with single repo', () => {
@@ -60,7 +60,7 @@ describe('render.ts', () => {
         },
       ]);
 
-      expect(content).toContain('(no description available)');
+      expect(content).toContain('(no description)');
     });
 
     it('should handle special chars in descriptions', () => {

@@ -1,0 +1,18 @@
+{{#if repos.length}}
+### 🚀 Fresh trends
+_(just fresh repos; created within the past week)_
+
+| Repo | Stars | Language | Description |
+|------|-------|----------|-------------|
+{{#each repos}}
+| [{{nameWithOwner}}]({{url}}) | {{formatNumber stargazerCount}} | {{#if primaryLanguage}}{{primaryLanguage}}{{else}}-{{/if}} | {{#if description}}{{description}}{{else}}(no description){{/if}} |
+{{/each}}
+{{else}}
+## 💔 A quiet week on GitHub
+
+It's either an unusually calm week… or a bug in disguise 🤔
+
+---
+{{/if}}
+
+*Generated on {{date}} • [View more trends](https://github.com/mhadidg/gh-trends)*
