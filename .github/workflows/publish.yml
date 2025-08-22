@@ -1,4 +1,4 @@
-name: Send newsletter
+name: Publish release
 
 on:
   #schedule:

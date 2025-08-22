@@ -1,4 +1,4 @@
-import { Repository } from '../utils/types';
+import { Repository } from '../types/repository';
 
 // Mock GitHub GraphQL API response
 export const mockGithubRepos: Repository[] = [

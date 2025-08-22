@@ -14,11 +14,5 @@ export const ScoredRepositorySchema = RepositorySchema.extend({
   score: z.number(),
 });
 
-export const NewsletterSchema = z.object({
-  subject: z.string(),
-  content: z.string(),
-});
-
 export type Repository = z.infer<typeof RepositorySchema>;
 export type ScoredRepository = z.infer<typeof ScoredRepositorySchema>;
-export type Newsletter = z.infer<typeof NewsletterSchema>;

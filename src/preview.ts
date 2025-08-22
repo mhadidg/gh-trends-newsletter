@@ -21,12 +21,12 @@ async function preview() {
   logInfo('score', `${scoredRepos.length} repos selected`);
   console.log('');
 
-  console.log('✍️ Crafting newsletter content...');
-  const newsletter = render(scoredRepos);
-  logInfo('render', `rendered newsletter (subject: ${newsletter.subject})`);
+  console.log('✍️ Crafting release content');
+  const content = render(scoredRepos);
+  logInfo('render', `rendered release`);
   console.log('');
   console.log('─'.repeat(50));
-  console.log(newsletter.content);
+  console.log(content);
 }
 
 // Run if this is the main module

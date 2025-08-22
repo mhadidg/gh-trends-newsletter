@@ -1,4 +1,4 @@
-import { Repository, RepositorySchema } from '../utils/types';
+import { Repository, RepositorySchema } from '../types/repository';
 import { mockGithubRepos } from '../mocks/github-api';
 import { TaggedError, HttpError, logInfo } from '../utils/logging';
 

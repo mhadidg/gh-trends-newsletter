@@ -6,6 +6,10 @@ export function getWeekNumber(date: Date): number {
   return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
+export function capitalize(str: string): string {
+  return str ? str[0]!.toUpperCase() + str.slice(1) : '';
+}
+
 export async function handleProcessError(error: unknown) {
   if (error instanceof HttpError) {
     await logHttpError(error.tag, error);

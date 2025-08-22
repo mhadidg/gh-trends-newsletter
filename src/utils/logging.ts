@@ -1,10 +1,13 @@
+import { capitalize } from './common';
+
 export class TaggedError extends Error {
   constructor(
     public tag: string,
-    public message: string
+    public message: string,
+    public metadata?: Record<string, unknown>
   ) {
     super(message);
-    this.name = 'CustomError';
+    this.name = 'TaggedError';
   }
 }
 
@@ -27,8 +30,13 @@ export function logWarn(tag: string, message: string) {
   console.warn(`[WARN] ${tag}: ${message}`);
 }
 
-export function logError(tag: string, err: TaggedError) {
+export function logError(tag: string, err: TaggedError, metadata?: Record<string, unknown>) {
   console.error(`[Error] ${tag}: ${err.message}`);
+  if (metadata) {
+    Object.entries(metadata).forEach(([key, value]) => {
+      console.error(`  → ${capitalize(key)}: ${value}`);
+    });
+  }
 }
 
 export async function logHttpError(tag: string, err: HttpError) {

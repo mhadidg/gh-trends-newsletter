@@ -1,5 +1,5 @@
 import { franc } from 'franc';
-import { Repository, ScoredRepository } from '../utils/types';
+import { Repository, ScoredRepository } from '../types/repository';
 import { logWarn } from '../utils/logging';
 
 export function score(repos: Repository[]): ScoredRepository[] {

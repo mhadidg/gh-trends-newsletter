@@ -3,8 +3,7 @@
 import 'dotenv-flow/config';
 import { _fetch } from './pipeline/fetch.js';
 import { score } from './pipeline/score.js';
-import { render } from './pipeline/render';
-import { send } from './pipeline/send.js';
+import { publishAll } from './pipeline/publish.js';
 import { logInfo } from './utils/logging';
 import { handleProcessError } from './utils/common';
 
@@ -26,16 +25,9 @@ export async function main(): Promise<void> {
   logInfo('score', `${scoredRepos.length} repos selected`);
   console.log('');
 
-  console.log('✍️ Crafting newsletter content...');
-  const newsletter = render(scoredRepos);
-  logInfo('render', `rendered newsletter (subject: ${newsletter.subject})`);
-  console.log('');
-
-  const sendEnabled = process.env.SEND_ENABLED === 'true';
-  console.log(`📮 Publishing status: ${sendEnabled ? 'LIVE' : 'DRY RUN'}`);
-
-  const messageId = await send(newsletter);
-  logInfo('send', `email sent (ID: ${messageId})`);
+  console.log('📮 Publishing to all enabled channels');
+  const messageIds = await publishAll(scoredRepos);
+  logInfo('publish', `published release (IDs: ${messageIds.join(', ')})`);
 }
 
 // Run if this is the main module
