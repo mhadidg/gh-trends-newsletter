@@ -133,7 +133,7 @@ describe('fetch.ts', () => {
           ok: true,
           // At least one result is required to trigger GitHub API
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Then mock GitHub API response
@@ -148,6 +148,7 @@ describe('fetch.ts', () => {
             description: 'Test repo',
             language: 'TypeScript',
             created_at: '2024-12-15T10:30:00Z',
+            stargazers_count: 100,
           }),
         });
 
@@ -171,7 +172,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Mock GitHub API response
@@ -184,6 +185,7 @@ describe('fetch.ts', () => {
             created_at: '2024-12-15T10:30:00Z',
             description: null, // optional
             language: null, // optional
+            stargazers_count: 100,
           }),
         });
 
@@ -201,8 +203,8 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [
-              { repo_name: 'owner1/repo1', stars: 150, appeared_at: '2024-12-15' },
-              { repo_name: 'owner2/repo2', stars: 200, appeared_at: '2024-12-14' },
+              { repo_name: 'owner1/repo1', appeared_at: '2025-08-16 18:48:25' },
+              { repo_name: 'owner2/repo2', appeared_at: '2025-08-16 18:48:25' },
             ],
           }),
         })
@@ -216,6 +218,7 @@ describe('fetch.ts', () => {
             description: 'First repo',
             language: 'JavaScript',
             created_at: '2024-12-15T10:30:00Z',
+            stargazers_count: 150,
           }),
         })
         // Mock second GitHub API response
@@ -228,6 +231,7 @@ describe('fetch.ts', () => {
             description: 'Second repo',
             language: 'Python',
             created_at: '2024-12-14T10:30:00Z',
+            stargazers_count: 200,
           }),
         });
 
@@ -254,8 +258,8 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [
-              { repo_name: 'owner1/repo1', stars: 150, appeared_at: '2024-12-15' },
-              { repo_name: 'deleted/repo', stars: 100, appeared_at: '2024-12-14' },
+              { repo_name: 'owner1/repo1', appeared_at: '2025-08-16 18:48:25' },
+              { repo_name: 'deleted/repo', appeared_at: '2025-08-16 18:48:25' },
             ],
           }),
         })
@@ -269,6 +273,7 @@ describe('fetch.ts', () => {
             description: 'First repo',
             language: 'JavaScript',
             created_at: '2024-12-15T10:30:00Z',
+            stargazers_count: 100,
           }),
         })
         // Second GitHub API call returns 404
@@ -289,7 +294,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'private/repo', stars: 150, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'private/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // GitHub API call returns 403 (private repo)
@@ -309,7 +314,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Mock GitHub API response
@@ -334,7 +339,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Then mock GitHub API JSON parsing error
@@ -352,7 +357,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Then mock GitHub API network error
@@ -367,7 +372,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
-            data: [{ repo_name: 'test/repo', stars: 100, appeared_at: '2024-12-15' }],
+            data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
           }),
         })
         // Mock GitHub API error

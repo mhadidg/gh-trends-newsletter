@@ -96,7 +96,7 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
       description: details.description,
       primaryLanguage: details.language,
       createdAt: details.created_at,
-      stargazerCount: parseInt(repo.stars),
+      stargazerCount: details.stargazers_count,
     });
 
     result.push(repository);
