@@ -18,7 +18,6 @@ export async function publishAll(
   pubs: Publisher[] = publishers
 ): Promise<string[]> {
   const content = render(repos);
-
   const enabledPubs = pubs.filter(pub => pub.enabled());
 
   if (enabledPubs.length === 0) {

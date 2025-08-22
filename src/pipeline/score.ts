@@ -1,6 +1,7 @@
 import { franc } from 'franc';
 import { Repository, ScoredRepository } from '../types/repository';
 import { logWarn } from '../utils/logging';
+import { hoursSince } from '../utils/common';
 
 export function score(repos: Repository[]): ScoredRepository[] {
   const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
@@ -24,7 +25,7 @@ export function score(repos: Repository[]): ScoredRepository[] {
 
       return true;
     })
-    .map(repo => ({ ...repo, score: repo.stargazerCount }))
+    .map(repo => ({ ...repo, score: repo.stargazerCount / hoursSince(repo.createdAt) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, topn);
 }
