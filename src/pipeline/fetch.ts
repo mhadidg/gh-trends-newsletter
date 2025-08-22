@@ -1,5 +1,5 @@
 import { Repository, RepositorySchema } from '../types/repository';
-import { mockGithubRepos } from '../mocks/github-api';
+import { mockRepos } from '../mocks/repos';
 import { TaggedError, HttpError, logInfo } from '../utils/logging';
 
 export interface ClickHouseRepo {
@@ -32,7 +32,7 @@ FORMAT JSON
 // TODO: backoff on 429/secondary rate limits; read X-RateLimit-Remaining headers.
 export async function _fetch(): Promise<Repository[]> {
   if (process.env.NODE_ENV !== 'production') {
-    return mockRepos();
+    return parseRepos(mockRepos);
   }
 
   const token = process.env.GITHUB_TOKEN;
@@ -103,10 +103,6 @@ async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repo
   }
 
   return result;
-}
-
-function mockRepos(): Repository[] {
-  return parseRepos(mockGithubRepos);
 }
 
 function parseRepos(rawRepos: unknown[]): Repository[] {

@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from '../../src/pipeline/render';
 import { ScoredRepository } from '../../src/types/repository';
-import { mockGithubRepos } from '../../src/mocks/github-api';
+import { mockRepos } from '../../src/mocks/repos';
 
 describe('render.ts', () => {
   const mockDate = new Date('2025-08-15T10:00:00.000Z'); // friday, Week 33
 
-  const mockScoredRepos: ScoredRepository[] = mockGithubRepos.map((repo, index) => ({
+  const mockScoredRepos: ScoredRepository[] = mockRepos.map((repo, index) => ({
     ...repo, // spread the original props
     score: 0.9 - index * 0.1,
   }));

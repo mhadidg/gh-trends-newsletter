@@ -1,7 +1,6 @@
 import { Repository } from '../types/repository';
 
-// Mock GitHub GraphQL API response
-export const mockGithubRepos: Repository[] = [
+export const mockRepos: Repository[] = [
   {
     id: 'MDEwOlJlcG9zaXRvcnkxMjM0NTY3ODk=',
     nameWithOwner: 'example/awesome-project',
@@ -79,7 +78,7 @@ export const mockGithubRepos: Repository[] = [
     nameWithOwner: 'makers/design-system',
     url: 'https://github.com/makers/design-system',
     description: 'Modern design system components',
-    primaryLanguage: 'CSS',
+    primaryLanguage: null,
     createdAt: '2024-12-07T13:10:00Z',
     stargazerCount: 540,
   },
@@ -87,7 +86,7 @@ export const mockGithubRepos: Repository[] = [
     id: 'MDEwOlJlcG9zaXRvcnkxMjM0NTY3OTg=',
     nameWithOwner: 'builders/deployment-tool',
     url: 'https://github.com/builders/deployment-tool',
-    description: 'Simplified deployment automation',
+    description: null,
     primaryLanguage: 'Rust',
     createdAt: '2024-12-06T17:25:00Z',
     stargazerCount: 1320,

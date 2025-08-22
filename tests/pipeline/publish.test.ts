@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ScoredRepository } from '../../src/types/repository';
 import { publishAll } from '../../src/pipeline/publish';
-import { mockGithubRepos } from '../../src/mocks/github-api';
+import { mockRepos } from '../../src/mocks/repos';
 
 const publisher01 = {
   name: 'publisher-01',
@@ -26,7 +26,7 @@ vi.mock('../../src/pipeline/render', () => ({
 describe('publish.ts', () => {
   const repos: ScoredRepository[] = [
     {
-      ...mockGithubRepos[0]!,
+      ...mockRepos[0]!,
       score: 0,
     },
   ];
