@@ -62,8 +62,10 @@ async function fetchTrendingRepos(days: number, limit: number): Promise<ClickHou
     throw new HttpError('clickhouse', 'fetching trending repos failed', response);
   }
 
-  const data = await response.json();
-  return data.data as ClickHouseRepo[];
+  const json = await response.json();
+  logInfo('clickhouse', `number of rows inspected: ${json.statistics.rows_read}`);
+
+  return json.data as ClickHouseRepo[];
 }
 
 async function enrichRepos(repos: ClickHouseRepo[], token: string): Promise<Repository[]> {

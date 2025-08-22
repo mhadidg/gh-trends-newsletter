@@ -52,7 +52,7 @@ describe('fetch.ts', () => {
       // Mock ClickHouse response
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: vi.fn().mockResolvedValue({ data: [] }),
+        json: vi.fn().mockResolvedValue({ data: [], statistics: [] }),
       });
 
       await _fetch();
@@ -69,7 +69,7 @@ describe('fetch.ts', () => {
       // Mock ClickHouse response with empty data
       mockFetch.mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue({ data: [] }),
+        json: vi.fn().mockResolvedValue({ data: [], statistics: [] }),
       });
 
       const result = await _fetch();
@@ -134,6 +134,7 @@ describe('fetch.ts', () => {
           // At least one result is required to trigger GitHub API
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Then mock GitHub API response
@@ -173,6 +174,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Mock GitHub API response
@@ -202,6 +204,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
+            statistics: { rows_read: 1000 },
             data: [
               { repo_name: 'owner1/repo1', appeared_at: '2025-08-16 18:48:25' },
               { repo_name: 'owner2/repo2', appeared_at: '2025-08-16 18:48:25' },
@@ -257,6 +260,7 @@ describe('fetch.ts', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: vi.fn().mockResolvedValue({
+            statistics: { rows_read: 1000 },
             data: [
               { repo_name: 'owner1/repo1', appeared_at: '2025-08-16 18:48:25' },
               { repo_name: 'deleted/repo', appeared_at: '2025-08-16 18:48:25' },
@@ -295,6 +299,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'private/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // GitHub API call returns 403 (private repo)
@@ -315,6 +320,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Mock GitHub API response
@@ -340,6 +346,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Then mock GitHub API JSON parsing error
@@ -358,6 +365,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Then mock GitHub API network error
@@ -373,6 +381,7 @@ describe('fetch.ts', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             data: [{ repo_name: 'test/repo', appeared_at: '2025-08-16 18:48:25' }],
+            statistics: { rows_read: 1000 },
           }),
         })
         // Mock GitHub API error
