@@ -6,6 +6,13 @@ export function weekNumber(date: Date): number {
   return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
+export function hoursSince(date: string): number {
+  const created = new Date(date);
+  const now = new Date();
+  const diff = now.getTime() - created.getTime();
+  return diff / (1000 * 60 * 60);
+}
+
 export function capitalize(str: string): string {
   return str ? str[0]!.toUpperCase() + str.slice(1) : '';
 }
