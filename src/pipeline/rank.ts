@@ -3,7 +3,7 @@ import { Repository, ScoredRepository } from '../types/repository';
 import { logWarn } from '../utils/logging';
 import { hoursSince } from '../utils/common';
 
-export function score(repos: Repository[]): ScoredRepository[] {
+export function rank(repos: Repository[]): ScoredRepository[] {
   const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
 
   return repos
@@ -16,7 +16,9 @@ export function score(repos: Repository[]): ScoredRepository[] {
       }
 
       const lang = franc(repo.description);
-      // no Chinese with love
+      // NOTE: I'd rather filter by English only, but lang detection is flawed,
+      // especially for short text (3-5 words). Chinese is the biggest non-English
+      // spoken language on GitHub, so let's just block it (with love).
       if (lang === 'cmn') {
         logWarn('score', `Chinese repo, skipping: ${repoName}`);
         return false;

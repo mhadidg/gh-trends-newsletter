@@ -2,7 +2,7 @@
 
 import 'dotenv-flow/config';
 import { _fetch } from './pipeline/fetch.js';
-import { score } from './pipeline/score.js';
+import { rank } from './pipeline/rank';
 import { render } from './pipeline/render';
 import { logInfo } from './utils/logging';
 import { handleProcessError } from './utils/common';
@@ -17,7 +17,7 @@ async function preview() {
   console.log('');
 
   console.log('🏆 Scoring to select the best');
-  const scoredRepos = score(repos);
+  const scoredRepos = rank(repos);
   logInfo('score', `${scoredRepos.length} repos selected`);
   console.log('');
 
