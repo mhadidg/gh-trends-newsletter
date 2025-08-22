@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import Handlebars from 'handlebars';
 import { ScoredRepository } from '../types/repository';
-import { getWeekNumber } from '../utils/common';
+import { weekNumber } from '../utils/common';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +20,7 @@ const template = Handlebars.compile(templateSource);
 export function render(repos: ScoredRepository[]): string {
   const now = new Date();
   const year = now.getFullYear();
-  const week = getWeekNumber(now);
+  const week = weekNumber(now);
 
   const templateData = {
     year,

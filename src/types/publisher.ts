@@ -1,4 +1,4 @@
-import { getWeekNumber } from '../utils/common';
+import { weekNumber } from '../utils/common';
 
 export abstract class Publisher {
   abstract readonly name: string;
@@ -8,7 +8,7 @@ export abstract class Publisher {
   subject(): string {
     const now = new Date();
     const year = now.getFullYear();
-    const week = getWeekNumber(now);
+    const week = weekNumber(now);
     return `GitHub Trends — ${year}-W${week.toString().padStart(2, '0')}`;
   }
 }

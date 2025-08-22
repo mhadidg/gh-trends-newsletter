@@ -1,5 +1,5 @@
 import { HttpError, TaggedError } from '../utils/logging';
-import { getWeekNumber } from '../utils/common';
+import { weekNumber } from '../utils/common';
 import { Publisher } from '../types/publisher';
 
 export const SERVICE_URL = 'https://api.github.com/repos';
@@ -56,7 +56,7 @@ export class GitHubReleasePublisher extends Publisher {
   private releaseTag(): string {
     const now = new Date();
     const year = now.getFullYear();
-    const week = getWeekNumber(now);
+    const week = weekNumber(now);
     return `release-${year}-W${week.toString().padStart(2, '0')}`;
   }
 }
