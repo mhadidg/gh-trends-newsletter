@@ -5,7 +5,8 @@ import { GitHubClient } from '../clients/github';
 import { ClickHouseClient } from '../clients/clickhouse';
 
 export async function scan(): Promise<Repository[]> {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.USE_MOCK_REPOS !== 'false') {
+    logInfo('scan', 'using mock repos');
     return parseRepos(mockRepos);
   }
 
