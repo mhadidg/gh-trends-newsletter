@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpError } from '../../../src/utils/logging';
-import { ButtondownPublisher, SERVICE_URL } from '../../../src/publishers/buttondown';
+import { ButtondownPublisher } from '../../../src/publishers/buttondown';
+import { ButtondownClient } from '../../../src/clients/buttondown';
 
-describe('send.ts', () => {
+describe('buttondown.ts', () => {
   const mockFetch = vi.fn();
   let instance: ButtondownPublisher;
 
@@ -75,7 +76,7 @@ describe('send.ts', () => {
       await expect(instance.publish(content)).resolves.toBe(id);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        SERVICE_URL,
+        ButtondownClient.baseUrl,
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({

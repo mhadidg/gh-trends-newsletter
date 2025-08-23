@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpError, TaggedError } from '../../../src/utils/logging';
-import { GitHubReleasePublisher, SERVICE_URL } from '../../../src/publishers/gh-release';
+import { GitHubReleasePublisher } from '../../../src/publishers/gh-release';
+import { GitHubClient } from '../../../src/clients/github';
 
-describe('send.ts', () => {
+describe('gh-release.ts', () => {
   const mockFetch = vi.fn();
   let instance: GitHubReleasePublisher;
 
@@ -41,6 +42,7 @@ describe('send.ts', () => {
 
   describe('config', () => {
     it('should throw when GITHUB_TOKEN is missing', async () => {
+      vi.stubEnv('GITHUB_RELEASES_REPO', 'example/repo');
       vi.stubEnv('GITHUB_TOKEN', undefined);
 
       await expect(instance.publish(content)).rejects.toThrow('GITHUB_TOKEN');
@@ -49,6 +51,7 @@ describe('send.ts', () => {
     });
 
     it('should throw when GITHUB_TOKEN is empty', async () => {
+      vi.stubEnv('GITHUB_RELEASES_REPO', 'example/repo');
       vi.stubEnv('GITHUB_TOKEN', '');
 
       await expect(instance.publish(content)).rejects.toThrow('GITHUB_TOKEN');
@@ -57,7 +60,6 @@ describe('send.ts', () => {
     });
 
     it('should throw when GITHUB_RELEASES_REPO is missing', async () => {
-      vi.stubEnv('GITHUB_TOKEN', 'ghp_valid_token_123');
       vi.stubEnv('GITHUB_RELEASES_REPO', undefined);
 
       await expect(instance.publish(content)).rejects.toThrow('GITHUB_RELEASES_REPO');
@@ -66,7 +68,6 @@ describe('send.ts', () => {
     });
 
     it('should throw when GITHUB_RELEASES_REPO is missing', async () => {
-      vi.stubEnv('GITHUB_TOKEN', 'ghp_valid_token_123');
       vi.stubEnv('GITHUB_RELEASES_REPO', '');
 
       await expect(instance.publish(content)).rejects.toThrow('GITHUB_RELEASES_REPO');
@@ -95,7 +96,7 @@ describe('send.ts', () => {
       await expect(instance.publish(content)).resolves.toBe(id.toString());
 
       expect(mockFetch).toHaveBeenCalledWith(
-        `${SERVICE_URL}/${repo}/releases`,
+        `${GitHubClient.baseUrl}/repos/${repo}/releases`,
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({

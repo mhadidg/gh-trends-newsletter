@@ -113,7 +113,7 @@ describe('fetch.ts', () => {
     it('should throw when GITHUB_TOKEN is missing', async () => {
       vi.stubEnv('GITHUB_TOKEN', undefined);
 
-      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN var required');
+      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN required');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe('fetch.ts', () => {
     it('should throw when GITHUB_TOKEN is empty', async () => {
       vi.stubEnv('GITHUB_TOKEN', '');
 
-      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN var required');
+      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN required');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
