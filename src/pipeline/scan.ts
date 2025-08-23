@@ -4,8 +4,7 @@ import { logInfo } from '../utils/logging';
 import { GitHubClient } from '../clients/github';
 import { ClickHouseClient } from '../clients/clickhouse';
 
-// TODO: backoff on 429/secondary rate limits; read X-RateLimit-Remaining headers.
-export async function _fetch(): Promise<Repository[]> {
+export async function scan(): Promise<Repository[]> {
   if (process.env.NODE_ENV !== 'production') {
     return parseRepos(mockRepos);
   }
@@ -14,11 +13,11 @@ export async function _fetch(): Promise<Repository[]> {
   const clickhouse = new ClickHouseClient();
   const github = new GitHubClient(process.env.GITHUB_TOKEN);
 
-  const fetchDays = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
+  const dayAgo = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
   const topN = parseInt(process.env.NEWSLETTER_TOP_N || '10');
-  const fetchLimit = topN * 3; // account for filtering
+  const limit = topN * 3; // account for filtering
 
-  const trendingRepos = await clickhouse.getTrendingRepos(fetchDays, fetchLimit);
+  const trendingRepos = await clickhouse.getTrendingRepos(dayAgo, limit);
   logInfo('clickhouse', `fetched ${trendingRepos.length} repos`);
 
   const result: Repository[] = [];

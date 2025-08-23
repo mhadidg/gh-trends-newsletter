@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { _fetch } from '../../src/pipeline/fetch';
+import { scan } from '../../src/pipeline/scan';
 import { HttpError } from '../../src/utils/logging';
 
-describe('fetch.ts', () => {
+describe('scan.ts', () => {
   const mockFetch = vi.fn();
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('fetch.ts', () => {
 
   describe('Mocking', () => {
     it('should return mock data in test', async () => {
-      await _fetch();
+      await scan();
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -25,7 +25,7 @@ describe('fetch.ts', () => {
     it('should return mock data in development', async () => {
       vi.stubEnv('NODE_ENV', 'development');
 
-      await _fetch();
+      await scan();
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -33,7 +33,7 @@ describe('fetch.ts', () => {
     it('should return mock data when NODE_ENV is undefined', async () => {
       vi.stubEnv('NODE_ENV', undefined);
 
-      await _fetch();
+      await scan();
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -55,7 +55,7 @@ describe('fetch.ts', () => {
         json: vi.fn().mockResolvedValue({ data: [], statistics: [] }),
       });
 
-      await _fetch();
+      await scan();
 
       const [url, options] = mockFetch.mock.calls[0] as Parameters<typeof fetch>;
 
@@ -72,7 +72,7 @@ describe('fetch.ts', () => {
         json: vi.fn().mockResolvedValue({ data: [], statistics: [] }),
       });
 
-      const result = await _fetch();
+      const result = await scan();
 
       expect(result).toHaveLength(0);
       expect(result).toEqual([]);
@@ -84,13 +84,13 @@ describe('fetch.ts', () => {
         json: vi.fn().mockRejectedValue(new Error('invalid JSON')),
       });
 
-      await expect(_fetch()).rejects.toThrow('invalid JSON');
+      await expect(scan()).rejects.toThrow('invalid JSON');
     });
 
     it('should throw on network errors', async () => {
       mockFetch.mockRejectedValue(new Error('network error'));
 
-      await expect(_fetch()).rejects.toThrow('network error');
+      await expect(scan()).rejects.toThrow('network error');
     });
 
     it('should throw on 5xx HTTP error', async () => {
@@ -100,7 +100,7 @@ describe('fetch.ts', () => {
         json: vi.fn().mockResolvedValue({}),
       });
 
-      await expect(_fetch()).rejects.toThrowError(HttpError);
+      await expect(scan()).rejects.toThrowError(HttpError);
     });
   });
 
@@ -113,7 +113,7 @@ describe('fetch.ts', () => {
     it('should throw when GITHUB_TOKEN is missing', async () => {
       vi.stubEnv('GITHUB_TOKEN', undefined);
 
-      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN required');
+      await expect(scan()).rejects.toThrow('GITHUB_TOKEN required');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe('fetch.ts', () => {
     it('should throw when GITHUB_TOKEN is empty', async () => {
       vi.stubEnv('GITHUB_TOKEN', '');
 
-      await expect(_fetch()).rejects.toThrow('GITHUB_TOKEN required');
+      await expect(scan()).rejects.toThrow('GITHUB_TOKEN required');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -153,7 +153,7 @@ describe('fetch.ts', () => {
           }),
         });
 
-      await _fetch();
+      await scan();
 
       expect(mockFetch).toHaveBeenNthCalledWith(
         2, // second call for GitHub API
@@ -191,7 +191,7 @@ describe('fetch.ts', () => {
           }),
         });
 
-      const result = await _fetch();
+      const result = await scan();
 
       expect(result).toHaveLength(1);
       expect(result[0]!.primaryLanguage).toBeNull();
@@ -238,7 +238,7 @@ describe('fetch.ts', () => {
           }),
         });
 
-      const result = await _fetch();
+      const result = await scan();
 
       expect(result).toHaveLength(2);
       expect(result[0]).toMatchObject({
@@ -286,7 +286,7 @@ describe('fetch.ts', () => {
           status: 404,
         });
 
-      const result = await _fetch();
+      const result = await scan();
 
       expect(result).toHaveLength(1); // Only the first repo
       expect(result[0]!.nameWithOwner).toBe('owner1/repo1');
@@ -308,7 +308,7 @@ describe('fetch.ts', () => {
           status: 403,
         });
 
-      const result = await _fetch();
+      const result = await scan();
 
       expect(result).toHaveLength(0); // Repo was skipped
     });
@@ -336,7 +336,7 @@ describe('fetch.ts', () => {
           }),
         });
 
-      await expect(_fetch()).rejects.toThrow('expected string');
+      await expect(scan()).rejects.toThrow('expected string');
     });
 
     it('should throw on JSON parsing errors', async () => {
@@ -355,7 +355,7 @@ describe('fetch.ts', () => {
           json: vi.fn().mockRejectedValue(new Error('invalid JSON')),
         });
 
-      await expect(_fetch()).rejects.toThrow('invalid JSON');
+      await expect(scan()).rejects.toThrow('invalid JSON');
     });
 
     it('should throw on network errors', async () => {
@@ -371,7 +371,7 @@ describe('fetch.ts', () => {
         // Then mock GitHub API network error
         .mockRejectedValue(new Error('network error'));
 
-      await expect(_fetch()).rejects.toThrow('network error');
+      await expect(scan()).rejects.toThrow('network error');
     });
 
     it('should throw 5xx HTTP error', async () => {
@@ -390,7 +390,7 @@ describe('fetch.ts', () => {
           status: 500,
         });
 
-      await expect(_fetch()).rejects.toThrowError(HttpError);
+      await expect(scan()).rejects.toThrowError(HttpError);
     });
   });
 });

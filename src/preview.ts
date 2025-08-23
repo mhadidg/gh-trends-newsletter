@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import 'dotenv-flow/config';
-import { _fetch } from './pipeline/fetch.js';
+import { scan } from './pipeline/scan';
 import { rank } from './pipeline/rank';
 import { render } from './pipeline/render';
 import { logInfo } from './utils/logging';
@@ -12,7 +12,7 @@ async function preview() {
   const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
 
   console.log(`📡 Scanning the GitHub universe (window: ${window}, top-n: ${topn})`);
-  const repos = await _fetch();
+  const repos = await scan();
   logInfo('scan', `${repos.length} trending repos discovered`);
   console.log('');
 
