@@ -23,15 +23,15 @@ describe('scan.ts', () => {
     });
 
     it('should return mock data in development', async () => {
-      vi.stubEnv('NODE_ENV', 'development');
+      vi.stubEnv('USE_MOCK_REPOS', 'true');
 
       await scan();
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
-    it('should return mock data when NODE_ENV is undefined', async () => {
-      vi.stubEnv('NODE_ENV', undefined);
+    it('should return mock data when USE_MOCK_REPOS is undefined', async () => {
+      vi.stubEnv('USE_MOCK_REPOS', undefined);
 
       await scan();
 
@@ -41,7 +41,7 @@ describe('scan.ts', () => {
 
   describe('ClickHouse API', () => {
     beforeEach(() => {
-      vi.stubEnv('NODE_ENV', 'production');
+      vi.stubEnv('USE_MOCK_REPOS', 'false');
       vi.stubEnv('GITHUB_TOKEN', 'ghp_valid_token_123');
     });
 
@@ -106,7 +106,7 @@ describe('scan.ts', () => {
 
   describe('GitHub API', () => {
     beforeEach(() => {
-      vi.stubEnv('NODE_ENV', 'production');
+      vi.stubEnv('USE_MOCK_REPOS', 'false');
       vi.stubEnv('GITHUB_TOKEN', 'ghp_valid_token_123');
     });
 
@@ -374,7 +374,7 @@ describe('scan.ts', () => {
       await expect(scan()).rejects.toThrow('network error');
     });
 
-    it('should throw 5xx HTTP error', async () => {
+    it('should throw on 5xx HTTP error', async () => {
       // Mock ClickHouse response
       mockFetch
         .mockResolvedValueOnce({
