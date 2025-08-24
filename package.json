@@ -10,7 +10,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "build:watch": "tsc --watch",
     "dev": "NODE_ENV=development tsx src/run.ts",
     "dev:release:gh": "USE_MOCK_REPOS=false GITHUB_RELEASES_ENABLED=true npm run dev",
