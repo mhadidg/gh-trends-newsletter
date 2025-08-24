@@ -47,7 +47,7 @@ describe('scan.ts', () => {
 
     it('should make well-formed request', async () => {
       vi.stubEnv('FETCH_WINDOW_DAYS', '7');
-      vi.stubEnv('NEWSLETTER_TOP_N', '10');
+      vi.stubEnv('RELEASE_TOP_N', '10');
 
       // Mock ClickHouse response
       mockFetch.mockResolvedValueOnce({

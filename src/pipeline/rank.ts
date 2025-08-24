@@ -1,15 +1,23 @@
 import { franc } from 'franc';
 import { Repository, ScoredRepository } from '../types/repository';
-import { logWarn } from '../utils/logging';
+import { logInfo, logWarn } from '../utils/logging';
 import { hoursSince } from '../utils/common';
 
 export function rank(repos: Repository[]): ScoredRepository[] {
-  const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
+  const limit = parseInt(process.env.RELEASE_TOP_N || '20');
+  const minStars = parseInt(process.env.RELEASE_MIN_STARS || '50');
 
   return repos
     .filter(repo => {
       const repoName = repo.nameWithOwner;
-      // high-quality repo with no desc? Happy to take the risks
+
+      // Apply minimum stars filter
+      if (repo.stargazerCount < minStars) {
+        logInfo('score', `${repo.stargazerCount} star(s) only, skipping: ${repoName}`);
+        return false;
+      }
+
+      // High-quality repo with no desc? Happy to take the risks
       if (repo.description === null || repo.description.trim() === '') {
         logWarn('score', `empty description, skipping: ${repoName}`);
         return false;
@@ -28,5 +36,5 @@ export function rank(repos: Repository[]): ScoredRepository[] {
     })
     .map(repo => ({ ...repo, score: repo.stargazerCount / hoursSince(repo.createdAt) }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, topn);
+    .slice(0, limit);
 }

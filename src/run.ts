@@ -13,7 +13,7 @@ export async function run(): Promise<void> {
 
 export async function main(): Promise<void> {
   const window = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
-  const topn = parseInt(process.env.NEWSLETTER_TOP_N || '10');
+  const topn = parseInt(process.env.RELEASE_TOP_N || '10');
 
   console.log(`📡 Scanning the GitHub universe (window: ${window}, top-n: ${topn})`);
   const repos = await scan();

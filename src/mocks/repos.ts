@@ -89,6 +89,6 @@ export const mockRepos: Repository[] = [
     description: null,
     primaryLanguage: 'Rust',
     createdAt: '2024-12-06T17:25:00Z',
-    stargazerCount: 1320,
+    stargazerCount: 1,
   },
 ];

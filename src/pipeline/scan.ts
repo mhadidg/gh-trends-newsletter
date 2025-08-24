@@ -15,8 +15,8 @@ export async function scan(): Promise<Repository[]> {
   const github = new GitHubClient(process.env.GITHUB_TOKEN);
 
   const dayAgo = parseInt(process.env.FETCH_WINDOW_DAYS || '7');
-  const topN = parseInt(process.env.NEWSLETTER_TOP_N || '10');
-  const limit = topN * 3; // account for filtering
+  const maxRepos = parseInt(process.env.RELEASE_TOP_N || '20');
+  const limit = maxRepos * 3; // account for filtering
 
   const trendingRepos = await clickhouse.getTrendingRepos(dayAgo, limit);
   logInfo('clickhouse', `fetched ${trendingRepos.length} repos`);
