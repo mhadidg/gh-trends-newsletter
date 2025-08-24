@@ -77,7 +77,9 @@ export const mockRepos: Repository[] = [
     id: 'MDEwOlJlcG9zaXRvcnkxMjM0NTY3OTc=',
     nameWithOwner: 'makers/design-system',
     url: 'https://github.com/makers/design-system',
-    description: 'Modern design system components',
+    description:
+      'Example of very long description that might need to be truncated in certain displays or ' +
+      'contexts to ensure that the layout remains clean and user-friendly',
     primaryLanguage: null,
     createdAt: '2024-12-07T13:10:00Z',
     stargazerCount: 540,

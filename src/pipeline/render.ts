@@ -8,8 +8,12 @@ import { weekNumber } from '../utils/common';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-Handlebars.registerHelper('add', (a: number, b: number) => a + b);
 Handlebars.registerHelper('formatNumber', (num: number) => num.toLocaleString());
+Handlebars.registerHelper('truncate', (str: string, len: number) => {
+  if (str.length <= len) return str;
+  if (str[len - 1] === ' ') len -= 1;
+  return str.slice(0, len) + '…';
+});
 
 // Load and compile template
 const templatePath = join(__dirname, '../templates/release.md.hbs');
