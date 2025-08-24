@@ -2,15 +2,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpError, TaggedError } from '../../../src/utils/logging';
 import { GitHubReleasePublisher } from '../../../src/publishers/gh-release';
 import { GitHubClient } from '../../../src/clients/github';
+import { ScoredRepository } from '../../../src/types/repository';
+import { mockRepos } from '../../../src/mocks/repos';
 
 describe('gh-release.ts', () => {
   const mockFetch = vi.fn();
   let instance: GitHubReleasePublisher;
 
   const content = 'Hello world';
+  const repos: ScoredRepository[] = mockRepos.map(repo => ({ ...repo, score: 0 }));
 
   beforeEach(() => {
     instance = new GitHubReleasePublisher();
+    vi.spyOn(instance, 'render').mockReturnValue(content);
     global.fetch = mockFetch as typeof fetch;
     vi.clearAllMocks(); // reset mocks
   });
@@ -45,7 +49,7 @@ describe('gh-release.ts', () => {
       vi.stubEnv('GITHUB_RELEASES_REPO', 'example/repo');
       vi.stubEnv('GITHUB_TOKEN', undefined);
 
-      await expect(instance.publish(content)).rejects.toThrow('GITHUB_TOKEN');
+      await expect(instance.publish(repos)).rejects.toThrow('GITHUB_TOKEN');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -54,7 +58,7 @@ describe('gh-release.ts', () => {
       vi.stubEnv('GITHUB_RELEASES_REPO', 'example/repo');
       vi.stubEnv('GITHUB_TOKEN', '');
 
-      await expect(instance.publish(content)).rejects.toThrow('GITHUB_TOKEN');
+      await expect(instance.publish(repos)).rejects.toThrow('GITHUB_TOKEN');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -62,7 +66,7 @@ describe('gh-release.ts', () => {
     it('should throw when GITHUB_RELEASES_REPO is missing', async () => {
       vi.stubEnv('GITHUB_RELEASES_REPO', undefined);
 
-      await expect(instance.publish(content)).rejects.toThrow('GITHUB_RELEASES_REPO');
+      await expect(instance.publish(repos)).rejects.toThrow('GITHUB_RELEASES_REPO');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -70,7 +74,7 @@ describe('gh-release.ts', () => {
     it('should throw when GITHUB_RELEASES_REPO is missing', async () => {
       vi.stubEnv('GITHUB_RELEASES_REPO', '');
 
-      await expect(instance.publish(content)).rejects.toThrow('GITHUB_RELEASES_REPO');
+      await expect(instance.publish(repos)).rejects.toThrow('GITHUB_RELEASES_REPO');
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -93,7 +97,7 @@ describe('gh-release.ts', () => {
         json: vi.fn().mockResolvedValue({ id }),
       });
 
-      await expect(instance.publish(content)).resolves.toBe(id.toString());
+      await expect(instance.publish(repos)).resolves.toBe(id.toString());
 
       expect(mockFetch).toHaveBeenCalledWith(
         `${GitHubClient.baseUrl}/repos/${repo}/releases`,
@@ -123,7 +127,7 @@ describe('gh-release.ts', () => {
         json: vi.fn().mockResolvedValue({}), // no id
       });
 
-      await expect(instance.publish(content)).rejects.toThrowError(TaggedError);
+      await expect(instance.publish(repos)).rejects.toThrowError(TaggedError);
     });
 
     it('should throw on JSON parsing errors', async () => {
@@ -132,7 +136,7 @@ describe('gh-release.ts', () => {
         json: vi.fn().mockRejectedValue(new Error('invalid JSON')),
       });
 
-      await expect(instance.publish(content)).rejects.toThrow('invalid JSON');
+      await expect(instance.publish(repos)).rejects.toThrow('invalid JSON');
     });
 
     it('should throw on 5xx HTTP error', async () => {
@@ -142,13 +146,13 @@ describe('gh-release.ts', () => {
         text: vi.fn().mockResolvedValue('internal server error'),
       });
 
-      await expect(instance.publish(content)).rejects.toThrowError(HttpError);
+      await expect(instance.publish(repos)).rejects.toThrowError(HttpError);
     });
 
     it('should throw on network errors', async () => {
       mockFetch.mockRejectedValue(new Error('network down'));
 
-      await expect(instance.publish(content)).rejects.toThrow('network down');
+      await expect(instance.publish(repos)).rejects.toThrow('network down');
     });
   });
 });

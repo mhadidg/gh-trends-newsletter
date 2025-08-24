@@ -6,30 +6,23 @@ import { mockRepos } from '../../src/mocks/repos';
 const publisher01 = {
   name: 'publisher-01',
   enabled: vi.fn().mockReturnValue(false),
-  publish: vi.fn(),
   subject: vi.fn().mockReturnValue('subject'),
+  render: vi.fn().mockReturnValue('content'),
+  publish: vi.fn(),
 };
 
 const publisher02 = {
   name: 'publisher-02',
   enabled: vi.fn().mockReturnValue(false),
-  publish: vi.fn(),
   subject: vi.fn().mockReturnValue('subject'),
+  render: vi.fn().mockReturnValue('content'),
+  publish: vi.fn(),
 };
 
 const pubs = [publisher01, publisher02];
 
-vi.mock('../../src/pipeline/render', () => ({
-  render: vi.fn().mockReturnValue('content'),
-}));
-
 describe('publish.ts', () => {
-  const repos: ScoredRepository[] = [
-    {
-      ...mockRepos[0]!,
-      score: 0,
-    },
-  ];
+  const repos: ScoredRepository[] = mockRepos.map(repo => ({ ...repo, score: 0 }));
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -51,7 +44,7 @@ describe('publish.ts', () => {
     const result = await publishAll(repos, pubs);
 
     expect(result).toEqual(['bd_123']);
-    expect(publisher01.publish).toHaveBeenCalledWith('content');
+    expect(publisher01.publish).toHaveBeenCalledWith(repos);
     expect(publisher02.publish).not.toHaveBeenCalled();
   });
 

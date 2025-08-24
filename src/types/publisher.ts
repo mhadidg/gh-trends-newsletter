@@ -1,9 +1,11 @@
 import { weekNumber } from '../utils/common';
+import { ScoredRepository } from './repository';
 
 export abstract class Publisher {
   abstract readonly name: string;
   abstract enabled(): boolean;
-  abstract publish(content: string): Promise<string>;
+  render?(repos: ScoredRepository[]): string;
+  abstract publish(repos: ScoredRepository[]): Promise<string>;
 
   subject(): string {
     const now = new Date();

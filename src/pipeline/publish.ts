@@ -3,7 +3,6 @@ import { ButtondownPublisher } from '../publishers/buttondown';
 import { GitHubReleasePublisher } from '../publishers/gh-release';
 import { logInfo } from '../utils/logging';
 import { Publisher } from '../types/publisher';
-import { render } from './render';
 
 const publishers = [
   // Executes in order
@@ -17,7 +16,6 @@ export async function publishAll(
   // Enables injecting custom publishers for testing
   pubs: Publisher[] = publishers
 ): Promise<string[]> {
-  const content = render('release.md.hbs', repos);
   const enabledPubs = pubs.filter(pub => pub.enabled());
 
   if (enabledPubs.length === 0) {
@@ -30,7 +28,7 @@ export async function publishAll(
   const results = await Promise.allSettled(
     enabledPubs.map(async pub => {
       logInfo('publish', `publishing via ${pub.name}`);
-      const messageId = await pub.publish(content);
+      const messageId = await pub.publish(repos);
       logInfo('publish', `${pub.name} published successfully (ID: ${messageId})`);
       return messageId;
     })
