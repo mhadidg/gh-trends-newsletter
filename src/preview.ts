@@ -4,7 +4,7 @@ import 'dotenv-flow/config';
 import { scan } from './pipeline/scan';
 import { rank } from './pipeline/rank';
 import { render } from './pipeline/render';
-import { logInfo } from './utils/logging';
+import { logError, logInfo, TaggedError } from './utils/logging';
 import { handleProcessError } from './utils/common';
 
 async function preview() {
@@ -22,8 +22,17 @@ async function preview() {
   console.log('');
 
   console.log('✍️ Crafting release content');
-  const content = render(scoredRepos);
+
+  const templateName = process.env.TEMPLATE_NAME;
+  if (!templateName) {
+    const error = new TaggedError('render', 'TEMPLATE_NAME is not set');
+    logError(error.tag, error);
+    process.exit(1);
+  }
+
+  const content = render(templateName, scoredRepos);
   logInfo('render', `rendered release`);
+
   console.log('');
   console.log('─'.repeat(50));
   console.log(content);

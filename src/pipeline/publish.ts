@@ -17,7 +17,7 @@ export async function publishAll(
   // Enables injecting custom publishers for testing
   pubs: Publisher[] = publishers
 ): Promise<string[]> {
-  const content = render(repos);
+  const content = render('release.md.hbs', repos);
   const enabledPubs = pubs.filter(pub => pub.enabled());
 
   if (enabledPubs.length === 0) {

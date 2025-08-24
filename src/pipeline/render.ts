@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import Handlebars from 'handlebars';
 import { ScoredRepository } from '../types/repository';
-import { weekNumber } from '../utils/common';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,27 +10,18 @@ const __dirname = dirname(__filename);
 Handlebars.registerHelper('formatNumber', (num: number) => num.toLocaleString());
 Handlebars.registerHelper('truncate', (str: string, len: number) => {
   if (str.length <= len) return str;
-  if (str[len - 1] === ' ') len -= 1;
+  if (str[len - 1] === ' ') len -= 1; // trailing space
   return str.slice(0, len) + '…';
 });
 
-// Load and compile template
-const templatePath = join(__dirname, '../templates/release.md.hbs');
-const templateSource = readFileSync(templatePath, 'utf-8');
-const template = Handlebars.compile(templateSource);
-
 // TODO: fix HTML entities are not decoded (e.g., &amp;)
-export function render(repos: ScoredRepository[]): string {
+export function render(templateName: string, repos: ScoredRepository[]): string {
+  const absolutePath = join(__dirname, `../templates/${templateName}`);
+  const templateSource = readFileSync(absolutePath, 'utf-8');
+  const template = Handlebars.compile(templateSource);
+
   const now = new Date();
-  const year = now.getFullYear();
-  const week = weekNumber(now);
+  const date = now.toISOString().split('T')[0];
 
-  const templateData = {
-    year,
-    week: week.toString().padStart(2, '0'),
-    date: now.toISOString().split('T')[0],
-    repos,
-  };
-
-  return template(templateData);
+  return template({ repos, date });
 }

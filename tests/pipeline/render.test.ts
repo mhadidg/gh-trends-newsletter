@@ -4,6 +4,7 @@ import { ScoredRepository } from '../../src/types/repository';
 import { mockRepos } from '../../src/mocks/repos';
 
 describe('render.ts', () => {
+  const template = 'release.md.hbs';
   const mockDate = new Date('2025-08-15T10:00:00.000Z'); // friday, Week 33
 
   const mockScoredRepos: ScoredRepository[] = mockRepos.map((repo, index) => ({
@@ -20,30 +21,28 @@ describe('render.ts', () => {
     vi.useRealTimers();
   });
 
-  describe('Basic rendering', () => {
+  describe('markdown', () => {
     it('should handle empty repos array', () => {
-      const content = render([]);
+      const content = render(template, []);
 
       expect(content).toContain('quiet week on GitHub');
     });
 
     it('should render release with single repo', () => {
-      const content = render([mockScoredRepos[0]!]);
+      const content = render(template, [mockScoredRepos[0]!]);
 
       expect(content).toContain('example/awesome-project');
     });
 
     it('should render release with multiple repos', () => {
-      const content = render([mockScoredRepos[0]!, mockScoredRepos[1]!]);
+      const content = render(template, [mockScoredRepos[0]!, mockScoredRepos[1]!]);
 
       expect(content).toContain('example/awesome-project');
       expect(content).toContain('dev/cool-tool');
     });
-  });
 
-  describe('Email content', () => {
     it('should include key information', () => {
-      const content = render([mockScoredRepos[0]!]);
+      const content = render(template, [mockScoredRepos[0]!]);
 
       expect(content).toContain('example/awesome-project');
       expect(content).toContain('An awesome new project that does amazing things');
@@ -51,8 +50,8 @@ describe('render.ts', () => {
       expect(content).toContain('1,250');
     });
 
-    it('should handle repos with null values', () => {
-      const content = render([
+    it('should handle repos with null optionals', () => {
+      const content = render(template, [
         {
           ...mockScoredRepos[0]!,
           description: null,
@@ -69,7 +68,7 @@ describe('render.ts', () => {
         description: 'Tool with "quotes" and <tags> & special chars',
       };
 
-      const content = render([specialCharRepo]);
+      const content = render(template, [specialCharRepo]);
 
       expect(content).toBeTruthy(); // should not break rendering
     });
@@ -80,7 +79,7 @@ describe('render.ts', () => {
         description: 'A project with emojis 🚀 and unicode chars 你好',
       };
 
-      const content = render([unicodeRepo]);
+      const content = render(template, [unicodeRepo]);
 
       expect(content).toContain('🚀');
       expect(content).toContain('你好');
