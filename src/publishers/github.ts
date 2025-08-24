@@ -5,7 +5,7 @@ import { GitHubClient } from '../clients/github';
 import { ScoredRepository } from '../types/repository';
 import { render } from '../pipeline/render';
 
-export class GitHubReleasePublisher extends Publisher {
+export class GitHubPublisher extends Publisher {
   readonly name = 'github-releases';
 
   enabled(): boolean {

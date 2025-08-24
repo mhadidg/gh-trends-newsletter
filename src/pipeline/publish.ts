@@ -1,13 +1,15 @@
 import { ScoredRepository } from '../types/repository';
 import { ButtondownPublisher } from '../publishers/buttondown';
-import { GitHubReleasePublisher } from '../publishers/gh-release';
+import { GitHubPublisher } from '../publishers/github';
+import { RSSPublisher } from '../publishers/rss';
 import { logInfo } from '../utils/logging';
 import { Publisher } from '../types/publisher';
 
 const publishers = [
   // Executes in order
   new ButtondownPublisher(),
-  new GitHubReleasePublisher(),
+  new GitHubPublisher(),
+  new RSSPublisher(),
 ];
 
 export async function publishAll(

@@ -1,19 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpError, TaggedError } from '../../../src/utils/logging';
-import { GitHubReleasePublisher } from '../../../src/publishers/gh-release';
+import { GitHubPublisher } from '../../../src/publishers/github';
 import { GitHubClient } from '../../../src/clients/github';
 import { ScoredRepository } from '../../../src/types/repository';
 import { mockRepos } from '../../../src/mocks/repos';
 
 describe('gh-release.ts', () => {
   const mockFetch = vi.fn();
-  let instance: GitHubReleasePublisher;
+  let instance: GitHubPublisher;
 
   const content = 'Hello world';
   const repos: ScoredRepository[] = mockRepos.map(repo => ({ ...repo, score: 0 }));
 
   beforeEach(() => {
-    instance = new GitHubReleasePublisher();
+    instance = new GitHubPublisher();
     vi.spyOn(instance, 'render').mockReturnValue(content);
     global.fetch = mockFetch as typeof fetch;
     vi.clearAllMocks(); // reset mocks
