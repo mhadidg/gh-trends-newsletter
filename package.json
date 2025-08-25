@@ -16,7 +16,7 @@
     "dev:release:rss": "USE_MOCK_REPOS=false RSS_ENABLED=true npm run dev",
     "preview": "NODE_ENV=development tsx src/preview.ts",
     "preview:live": "USE_MOCK_REPOS=false npm run preview",
-    "prod": "NODE_ENV=production node dist/run.js",
+    "start": "NODE_ENV=production node dist/run.js",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit",

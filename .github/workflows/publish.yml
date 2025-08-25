@@ -30,7 +30,7 @@ jobs:
       run: npm test
 
     - name: Send newsletter
-      run: npm run prod
+      run: npm run start
       env:
         SEND_ENABLED: true
         BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
