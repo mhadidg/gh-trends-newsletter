@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
     //
     "strict": true,
     "noUncheckedIndexedAccess": true,
@@ -11,7 +8,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    //
+    "allowImportingTsExtensions": false
   },
   "include": ["src", "tests", "vitest.config.ts"]
 }

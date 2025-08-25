@@ -5,7 +5,6 @@
   "author": "Mustapha Hadid",
   "license": "MIT",
   "main": "dist/index.js",
-  "type": "module",
   "engines": {
     "node": ">=20.0.0"
   },

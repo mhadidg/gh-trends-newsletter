@@ -1,11 +1,7 @@
 import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import path from 'node:path';
 import Handlebars from 'handlebars';
-import { ScoredRepository } from '../types/repository';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { ScoredRepository } from '../types/repository.js';
 
 Handlebars.registerHelper('formatNumber', (num: number) => num.toLocaleString());
 Handlebars.registerHelper('truncate', (str: string, len: number) => {
@@ -16,7 +12,8 @@ Handlebars.registerHelper('truncate', (str: string, len: number) => {
 
 // TODO: fix HTML entities are not decoded (e.g., &amp;)
 export function render(templateName: string, repos: ScoredRepository[]): string {
-  const absolutePath = join(__dirname, `../templates/${templateName}`);
+  // Read template file from src; not compiled in dist/
+  const absolutePath = path.join(process.cwd(), 'src', 'templates', templateName);
   const templateSource = readFileSync(absolutePath, 'utf-8');
   const template = Handlebars.compile(templateSource);
 

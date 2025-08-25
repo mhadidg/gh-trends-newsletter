@@ -3,7 +3,7 @@
 import 'dotenv-flow/config';
 import { scan } from './pipeline/scan';
 import { rank } from './pipeline/rank';
-import { publishAll } from './pipeline/publish.js';
+import { publishAll } from './pipeline/publish';
 import { logInfo } from './utils/logging';
 import { handleProcessError } from './utils/common';
 
@@ -31,6 +31,6 @@ export async function main(): Promise<void> {
 }
 
 // Run if this is the main module
-if (import.meta.url === `file://${process.argv[1]}`) {
-  await run();
+if (require.main === module) {
+  void run();
 }
