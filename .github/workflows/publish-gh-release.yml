@@ -1,0 +1,35 @@
+name: Publish Github release
+
+on:
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install deps
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Publish Github release
+      run: npm run start
+      env:
+        USE_MOCK_REPOS: false
+        GITHUB_RELEASES_ENABLED: true
+        GITHUB_RELEASES_REPO: ${{ github.repository }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
