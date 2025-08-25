@@ -44,7 +44,7 @@ export default [
       'promise/param-names': 'error',
 
       // General rules
-      'no-console': 'warn',
+      'no-console': 'off',
       'prefer-const': 'error',
       eqeqeq: ['error', 'always'],
     },
