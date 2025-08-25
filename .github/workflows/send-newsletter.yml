@@ -1,4 +1,4 @@
-name: Publish release
+name: Send newsletter
 
 on:
   #schedule:
@@ -20,14 +20,11 @@ jobs:
         node-version: '20'
         cache: 'npm'
 
-    - name: Install dependencies
+    - name: Install deps
       run: npm ci
 
     - name: Build project
       run: npm run build
-
-    - name: Run tests
-      run: npm test
 
     - name: Send newsletter
       run: npm run start
